@@ -1,23 +1,10 @@
-#include <errno.h>
 #include <linux/limits.h>
 #include <stdio.h>
 #include <sys/stat.h>
 
-#include "reap.h"
+#include <reap/reap.h>
 
-static int
-translateErrno(void)
-{
-    switch (errno) {
-    case EACCES: return REAP_RET_NO_PERMISSION;
-    case ELOOP: return REAP_RET_TOO_MANY_LINKS;
-    case ENOENT:
-    case ENOTDIR:
-    case EIO: return REAP_RET_NOT_FOUND;
-    case ENOMEM: return REAP_RET_OUT_OF_MEMORY;
-    default: return REAP_RET_OTHER;
-    }
-}
+#include "internal.h"
 
 bool
 reapCheck(void)
@@ -25,21 +12,6 @@ reapCheck(void)
     struct stat fs;
 
     return (stat("/proc/self", &fs) == 0 && S_ISDIR(fs.st_mode));
-}
-
-const char *
-reapErrorString(int value)
-{
-    switch (value) {
-    case REAP_RET_OK: return "No error";
-    case REAP_RET_BAD_USAGE: return "Invalid API usage";
-    case REAP_RET_OUT_OF_MEMORY: return "Failed to allocate memory";
-    case REAP_RET_NO_PERMISSION: return "No permission";
-    case REAP_RET_NOT_FOUND: return "Could not find a resource";
-    case REAP_RET_TOO_MANY_LINKS: return "Too many symbolic links to resolve";
-    case REAP_RET_OTHER: return "An unanticpated error occurred";
-    default: return "Invalid return value";
-    }
 }
 
 int
