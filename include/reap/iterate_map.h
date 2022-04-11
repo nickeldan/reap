@@ -20,6 +20,9 @@ int
 reapMapIteratorInit(pid_t pid, reapMapIterator *iterator);
 
 void
-reapMapIteratorClose(reapMapiterator *iterator);
+reapMapIteratorClose(reapMapIterator *iterator);
+
+int
+reapMapIteratorNext(reapMapIterator *iterator, reapMapResult *result);
 
 #endif  // REAP_ITERATE_MAP_H

@@ -2,6 +2,8 @@
 #define REAP_REAP_H
 
 #include "definitions.h"
-#include "iterate.h"
+#include "iterate_fd.h"
+#include "iterate_map.h"
+#include "iterate_proc.h"
 
 #endif  // REAP_REAP_H
