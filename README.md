@@ -1,8 +1,9 @@
 
 # REAP ![Badge Version] [![Badge License]][License] [![Badge Author]][Author]
 
-*A **Library** to provide easy access to* ***ProcFS***
+*The **REAP** library provides **Ridiculously Easy Access** to **Procfs**.*
 
+<br>
 <br>
 <br>
 
