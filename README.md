@@ -8,8 +8,8 @@
 
 <div align = center>
 
-*"We will encourage you to develop the three great virtues of* <br>
-*a programmer: laziness, impatience, and hubris.”* - Larry Wall
+*\"We will encourage you to develop the three great virtues of a* <br>
+*programmer: laziness, impatience, and hubris.” **- Larry Wall**​*
 
 </div>
 
