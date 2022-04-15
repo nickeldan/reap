@@ -1,4 +1,3 @@
-#include <linux/limits.h>
 #include <stdio.h>
 #include <sys/stat.h>
 
@@ -19,7 +18,7 @@ reapGetInfo(pid_t pid, reapInfo *info)
 {
     int ret = REAP_RET_OK;
     bool found_uid = false, found_gid = false, found_parent = false;
-    char prefix[20], buffer[PATH_MAX];
+    char prefix[20], buffer[100];
     FILE *file;
 
     if (pid <= 0 || !info) {

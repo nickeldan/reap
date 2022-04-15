@@ -7,6 +7,7 @@
 
 typedef struct reapFdIterator {
     DIR *dir;
+    pid_t pid;
 } reapFdIterator;
 
 typedef struct reapFdResult {
@@ -22,5 +23,8 @@ reapFdIteratorClose(reapFdIterator *iterator);
 
 int
 reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result);
+
+int
+reapReadFd(pid_t pid, int fd, char *dest, size_t size);
 
 #endif  // REAP_ITERATE_FD_H

@@ -6,6 +6,7 @@ int
 translateErrno(void)
 {
     switch (errno) {
+    case EINVAL: return REAP_RET_BAD_USAGE;
     case EACCES: return REAP_RET_NO_PERMISSION;
     case ELOOP: return REAP_RET_TOO_MANY_LINKS;
     case ENOENT:
