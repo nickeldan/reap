@@ -3,11 +3,22 @@
 
 *A **Library** to provide easy access to* ***ProcFS***
 
+<br>
+<br>
 
+<div align = center>
 
 *"We will encourage you to develop the three great virtues of* <br>
 *a programmer: laziness, impatience, and hubris.”* - Larry Wall
 
+</div>
+
+<br>
+<br>
+
+---
+
+<br>
 
 
 <!----------------------------------------------------------------------------->
