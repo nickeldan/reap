@@ -1,5 +1,5 @@
 
-# REAP ![Badge Version]
+# REAP ![Badge Version] [![Badge License]][License]
 
 *A **Library** to provide easy access to* ***ProcFS***
 
@@ -14,3 +14,7 @@
 
 
 [Badge Version]: https://img.shields.io/badge/Version-0.0.1-darkgray?style=for-the-badge
+[Badge License]: https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge
+
+
+[License]: LICENSE
