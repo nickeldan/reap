@@ -1,29 +1,23 @@
+#include <stdbool.h>
 #include <stdio.h>
-#include <sys/stat.h>
 
 #include <reap/reap.h>
 
 #include "internal.h"
 
-bool
-reapCheck(void)
-{
-    struct stat fs;
-
-    return (stat("/proc/self", &fs) == 0 && S_ISDIR(fs.st_mode));
-}
-
 int
-reapGetInfo(pid_t pid, reapInfo *info)
+reapGetInfo(pid_t pid, reapProcInfo *info)
 {
     int ret = REAP_RET_OK;
     bool found_uid = false, found_gid = false, found_parent = false;
-    char prefix[20], buffer[100];
+    char prefix[20], buffer[100], line[256];
     FILE *file;
 
     if (pid <= 0 || !info) {
         return REAP_RET_BAD_USAGE;
     }
+
+    info->pid = pid;
 
     snprintf(prefix, sizeof(prefix), "/proc/%li", (long)pid);
     snprintf(buffer, sizeof(buffer), "%s/exe", prefix);
@@ -41,7 +35,7 @@ reapGetInfo(pid_t pid, reapInfo *info)
     while (fgets(line, sizeof(line), file)) {
         unsigned long id, eid, ppid;
 
-        if (!found_uuid && sscanf(line, "Uid: %lu %lu %*lu %*lu\n", &id, &eid) == 2) {
+        if (!found_uid && sscanf(line, "Uid: %lu %lu %*lu %*lu\n", &id, &eid) == 2) {
             info->uid = id;
             info->euid = eid;
             if (found_gid && found_parent) {

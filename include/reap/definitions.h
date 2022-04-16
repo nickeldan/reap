@@ -1,7 +1,6 @@
 #ifndef REAP_DEFINITIONS_H
 #define REAP_DEFINITIONS_H
 
-#include <stdbool.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -21,19 +20,17 @@ enum reapRetValue {
 const char *
 reapErrorString(int value) __attribute__((pure));
 
-typedef struct reapInfo {
+typedef struct reapProcInfo {
+    pid_t pid;
     pid_t ppid;
     uid_t uid;
     uid_t euid;
-    git_t gid;
+    gid_t gid;
     gid_t egid;
     char exe[SHORT_PATH_SIZE];
-} reapInfo;
-
-bool
-reapCheck(void);
+} reapProcInfo;
 
 int
-reapGetInfo(pid_t pid, reapInfo *info);
+reapGetInfo(pid_t pid, reapProcInfo *info);
 
 #endif  // REAP_DEFINITIONS_H

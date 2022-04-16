@@ -1,6 +1,7 @@
 #ifndef REAP_ITERATE_MAP_H
 #define REAP_ITERATE_MAP_H
 
+#include <stdint.h>
 #include <stdio.h>
 
 #include "definitions.h"
@@ -23,6 +24,6 @@ void
 reapMapIteratorClose(reapMapIterator *iterator);
 
 int
-reapMapIteratorNext(reapMapIterator *iterator, reapMapResult *result);
+reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result);
 
 #endif  // REAP_ITERATE_MAP_H

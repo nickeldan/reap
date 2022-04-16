@@ -33,7 +33,7 @@ reapFdIteratorClose(reapFdIterator *iterator)
 }
 
 int
-reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result)
+reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
 {
     long value;
     char *endptr;
@@ -58,11 +58,7 @@ reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result)
     result->fd = value;
 
     snprintf(buffer, sizeof(buffer), "/proc/%li/fd/%i", (long)iterator->pid, result->fd);
-    if (readlink(buffer, result->file, sizeof(result->file)) != 0) {
-        return translateErrno();
-    }
-
-    return REAP_RET_OK;
+    return (readlink(buffer, result->file, sizeof(result->file)) == 0) ? REAP_RET_OK : translateErrno();
 }
 
 int

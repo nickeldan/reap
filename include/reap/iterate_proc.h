@@ -16,6 +16,6 @@ void
 reapProcIteratorClose(reapProcIterator *iterator);
 
 int
-reapProcIteratorNext(reapProcIterator *iterator, reapProcInfo *info);
+reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info);
 
 #endif  // REAP_ITERATE_PROC_H

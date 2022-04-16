@@ -22,7 +22,7 @@ void
 reapFdIteratorClose(reapFdIterator *iterator);
 
 int
-reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result);
+reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result);
 
 int
 reapReadFd(pid_t pid, int fd, char *dest, size_t size);

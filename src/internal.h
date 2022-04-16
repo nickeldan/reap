@@ -6,4 +6,4 @@
 int
 translateErrno(void);
 
-#endif // REAP_INTERNAL_H
+#endif  // REAP_INTERNAL_H
