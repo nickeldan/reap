@@ -6,7 +6,7 @@
 #include "internal.h"
 
 int
-reapGetInfo(pid_t pid, reapProcInfo *info)
+reapGetProcInfo(pid_t pid, reapProcInfo *info)
 {
     int ret = REAP_RET_OK;
     bool found_uid = false, found_gid = false, found_parent = false;
@@ -35,7 +35,7 @@ reapGetInfo(pid_t pid, reapProcInfo *info)
     while (fgets(line, sizeof(line), file)) {
         unsigned long id, eid, ppid;
 
-        if (!found_uid && sscanf(line, "Uid: %lu %lu %*lu %*lu\n", &id, &eid) == 2) {
+        if (!found_uid && sscanf(line, "Uid: %lu %lu %*u %*u\n", &id, &eid) == 2) {
             info->uid = id;
             info->euid = eid;
             if (found_gid && found_parent) {
@@ -43,7 +43,7 @@ reapGetInfo(pid_t pid, reapProcInfo *info)
             }
             found_uid = true;
         }
-        else if (!found_gid && sscanf(line, "Gid: %lu %lu %*lu %*lu\n", &id, &eid) == 2) {
+        else if (!found_gid && sscanf(line, "Gid: %lu %lu %*u %*u\n", &id, &eid) == 2) {
             info->gid = id;
             info->egid = eid;
             if (found_uid && found_parent) {

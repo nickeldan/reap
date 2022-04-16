@@ -31,6 +31,6 @@ typedef struct reapProcInfo {
 } reapProcInfo;
 
 int
-reapGetInfo(pid_t pid, reapProcInfo *info);
+reapGetProcInfo(pid_t pid, reapProcInfo *info);
 
 #endif  // REAP_DEFINITIONS_H
