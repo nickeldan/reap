@@ -4,6 +4,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "config.h"
+
 #define SHORT_PATH_SIZE 256
 
 enum reapRetValue {
@@ -19,6 +21,11 @@ enum reapRetValue {
 
 const char *
 reapErrorString(int value) __attribute__((pure));
+
+#ifdef REAP_USE_ERROR_BUFFER
+char *
+reapGetError(void);
+#endif
 
 typedef struct reapProcInfo {
     pid_t pid;

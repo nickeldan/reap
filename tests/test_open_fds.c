@@ -38,7 +38,11 @@ main(int argc, char **argv)
         ret = REAP_RET_OK;
     }
     else {
+#ifdef REAP_USE_ERROR_BUFFER
+        fprintf(stderr, "reapFdIteratorNext: %s\n", reapGetError());
+#else
         fprintf(stderr, "reapFdIteratorNext: %s\n", reapErrorString(ret));
+#endif
     }
 
     reapFdIteratorClose(&iterator);

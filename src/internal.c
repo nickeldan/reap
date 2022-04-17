@@ -5,9 +5,9 @@
 #include "internal.h"
 
 int
-translateErrno(void)
+translateErrno(int errno_value)
 {
-    switch (errno) {
+    switch (errno_value) {
     case EINVAL: return REAP_RET_BAD_USAGE;
     case EACCES: return REAP_RET_NO_PERMISSION;
     case ELOOP: return REAP_RET_TOO_MANY_LINKS;

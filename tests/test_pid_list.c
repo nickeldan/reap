@@ -25,7 +25,11 @@ main()
         ret = REAP_RET_OK;
     }
     else {
-        fprintf(stderr, "reapProcIteratorNext: %s", reapErrorString(ret));
+#ifdef REAP_USE_ERROR_BUFFER
+        fprintf(stderr, "reapProcIteratorNext: %s\n", reapGetError());
+#else
+        fprintf(stderr, "reapProcIteratorNext: %s\n", reapErrorString(ret));
+#endif
     }
 
     return ret;

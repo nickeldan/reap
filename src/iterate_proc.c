@@ -1,4 +1,3 @@
-#include <errno.h>
 #include <stdlib.h>
 
 #include "reap/iterate_proc.h"
@@ -9,11 +8,19 @@ int
 reapProcIteratorInit(reapProcIterator *iterator)
 {
     if (!iterator) {
+        EMIT_ERROR("The iterator cannot be NULL");
         return REAP_RET_BAD_USAGE;
     }
 
     iterator->dir = opendir("/proc");
-    return iterator->dir ? REAP_RET_OK : translateErrno();
+    if (!iterator->dir) {
+        int local_errno = errno;
+
+        EMIT_ERROR("opendir failed on /proc: %s", strerror(local_errno));
+        return translateErrno(local_errno);
+    }
+
+    return REAP_RET_OK;
 }
 
 void
@@ -29,6 +36,15 @@ int
 reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info)
 {
     if (!iterator || !iterator->dir || !info) {
+        if (!iterator) {
+            EMIT_ERROR("The iterator cannot be NULL");
+        }
+        else if (!iterator->dir) {
+            EMIT_ERROR("This iterator has been closed");
+        }
+        else {
+            EMIT_ERROR("The info cannot be NULL");
+        }
         return REAP_RET_BAD_USAGE;
     }
 
@@ -41,7 +57,15 @@ reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info)
         errno = 0;
         entry = readdir(iterator->dir);
         if (!entry) {
-            return (errno == 0) ? REAP_RET_DONE : translateErrno();
+            int local_errno = errno;
+
+            if (local_errno == 0) {
+                return REAP_RET_DONE;
+            }
+            else {
+                EMIT_ERROR("readdir failed: %s", strerror(local_errno));
+                return translateErrno(local_errno);
+            }
         }
 
         value = strtol(entry->d_name, &endptr, 10);

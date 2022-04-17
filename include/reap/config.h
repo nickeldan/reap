@@ -1,0 +1,6 @@
+#ifndef REAP_CONFIG_H
+#define REAP_CONFIG_H
+
+#define REAP_USE_ERROR_BUFFER
+
+#endif  // REAP_CONFIG_H

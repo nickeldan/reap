@@ -1,9 +1,32 @@
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 
 #include <reap/reap.h>
 
 #include "internal.h"
+
+#ifdef REAP_USE_ERROR_BUFFER
+
+static _Thread_local char errorBuffer[256] = {0};
+
+void
+emitError(const char *format, ...)
+{
+    va_list args;
+
+    va_start(args, format);
+    vsnprintf(errorBuffer, sizeof(errorBuffer), format, args);
+    va_end(args);
+}
+
+char *
+reapGetError(void)
+{
+    return errorBuffer;
+}
+
+#endif  // REAP_USE_ERROR_BUFFER
 
 int
 reapGetProcInfo(pid_t pid, reapProcInfo *info)
@@ -14,6 +37,12 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info)
     FILE *file;
 
     if (pid <= 0 || !info) {
+        if (pid <= 0) {
+            EMIT_ERROR("The PID must be positive");
+        }
+        else {
+            EMIT_ERROR("The info cannot be NULL");
+        }
         return REAP_RET_BAD_USAGE;
     }
 
@@ -23,12 +52,16 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info)
     snprintf(buffer, sizeof(buffer), "%s/exe", prefix);
 
     if (betterReadlink(buffer, info->exe, sizeof(info->exe)) == -1) {
-        return translateErrno();
+        int local_errno = errno;
+
+        EMIT_ERROR("readlink failed on %s: %s", buffer, strerror(local_errno));
+        return translateErrno(local_errno);
     }
 
     snprintf(buffer, sizeof(buffer), "%s/status", prefix);
     file = fopen(buffer, "r");
     if (!file) {
+        EMIT_ERROR("%s not found", buffer);
         return REAP_RET_NOT_FOUND;
     }
 
@@ -60,6 +93,7 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info)
         }
     }
 
+    EMIT_ERROR("No %s line found in %s", found_gid ? found_uid ? "PPid" : "Uid" : "Gid", buffer);
     ret = REAP_RET_OTHER;
 
 done:
