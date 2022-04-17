@@ -2,6 +2,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <reap/iterate_fd.h>
@@ -44,11 +45,13 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
         return REAP_RET_BAD_USAGE;
     }
 
-    errno = 0;
-    entry = readdir(iterator->dir);
-    if (!entry) {
-        return (errno == 0) ? REAP_RET_DONE : translateErrno();
-    }
+    do {
+        errno = 0;
+        entry = readdir(iterator->dir);
+        if (!entry) {
+            return (errno == 0) ? REAP_RET_DONE : translateErrno();
+        }
+    } while (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0);
 
     value = strtol(entry->d_name, &endptr, 10);
     if (*endptr != '\0' || value < 0 || value > INT_MAX) {
@@ -58,8 +61,8 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
     result->fd = value;
 
     snprintf(buffer, sizeof(buffer), "/proc/%li/fd/%i", (long)iterator->pid, result->fd);
-    return (betterReadlink(buffer, result->file, sizeof(result->file)) == 0) ? REAP_RET_OK :
-                                                                               translateErrno();
+    return (betterReadlink(buffer, result->file, sizeof(result->file)) == -1) ? translateErrno() :
+                                                                                REAP_RET_OK;
 }
 
 int
@@ -72,5 +75,5 @@ reapReadFd(pid_t pid, int fd, char *dest, size_t size)
     }
 
     snprintf(buffer, sizeof(buffer), "/proc/%li/fd/%i", (long)pid, fd);
-    return (betterReadlink(buffer, dest, size) == 0) ? REAP_RET_OK : translateErrno();
+    return (betterReadlink(buffer, dest, size) == -1) ? translateErrno() : REAP_RET_OK;
 }
