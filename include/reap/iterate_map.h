@@ -14,7 +14,7 @@ typedef struct reapMapResult {
     uintptr_t start;
     uintptr_t end;
     int permissions;
-    char file[SHORT_PATH_SIZE];
+    char file[REAP_SHORT_PATH_SIZE];
 } reapMapResult;
 
 int

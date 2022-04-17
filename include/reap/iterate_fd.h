@@ -12,7 +12,7 @@ typedef struct reapFdIterator {
 
 typedef struct reapFdResult {
     int fd;
-    char file[SHORT_PATH_SIZE];
+    char file[REAP_SHORT_PATH_SIZE];
 } reapFdResult;
 
 int

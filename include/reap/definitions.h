@@ -6,8 +6,6 @@
 
 #include "config.h"
 
-#define SHORT_PATH_SIZE 256
-
 enum reapRetValue {
     REAP_RET_OK,
     REAP_RET_DONE,
@@ -34,7 +32,7 @@ typedef struct reapProcInfo {
     uid_t euid;
     gid_t gid;
     gid_t egid;
-    char exe[SHORT_PATH_SIZE];
+    char exe[REAP_SHORT_PATH_SIZE];
 } reapProcInfo;
 
 int

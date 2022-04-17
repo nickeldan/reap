@@ -3,4 +3,6 @@
 
 #define REAP_USE_ERROR_BUFFER
 
+#define REAP_SHORT_PATH_SIZE 256
+
 #endif  // REAP_CONFIG_H
