@@ -1,4 +1,6 @@
 #include <errno.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "internal.h"
 
@@ -15,4 +17,15 @@ translateErrno(void)
     case ENOMEM: return REAP_RET_OUT_OF_MEMORY;
     default: return REAP_RET_OTHER;
     }
+}
+
+int
+betterReadlink(const char *pathname, char *buf, size_t bufsiz)
+{
+    int ret;
+
+    memset(buf, '\0', bufsiz);
+    ret = readlink(pathname, buf, bufsiz);
+    buf[bufsiz - 1] = '\0';
+    return ret;
 }

@@ -22,7 +22,7 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info)
     snprintf(prefix, sizeof(prefix), "/proc/%li", (long)pid);
     snprintf(buffer, sizeof(buffer), "%s/exe", prefix);
 
-    if (readlink(buffer, info->exe, sizeof(info->exe)) == -1) {
+    if (betterReadlink(buffer, info->exe, sizeof(info->exe)) == -1) {
         return translateErrno();
     }
 

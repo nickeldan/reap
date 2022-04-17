@@ -3,3 +3,4 @@
 *.a
 deps.mk
 README.pdf
+test_pid_list

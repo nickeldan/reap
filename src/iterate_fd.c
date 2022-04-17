@@ -58,7 +58,8 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
     result->fd = value;
 
     snprintf(buffer, sizeof(buffer), "/proc/%li/fd/%i", (long)iterator->pid, result->fd);
-    return (readlink(buffer, result->file, sizeof(result->file)) == 0) ? REAP_RET_OK : translateErrno();
+    return (betterReadlink(buffer, result->file, sizeof(result->file)) == 0) ? REAP_RET_OK :
+                                                                               translateErrno();
 }
 
 int
@@ -71,5 +72,5 @@ reapReadFd(pid_t pid, int fd, char *dest, size_t size)
     }
 
     snprintf(buffer, sizeof(buffer), "/proc/%li/fd/%i", (long)pid, fd);
-    return (readlink(buffer, dest, size) == 0) ? REAP_RET_OK : translateErrno();
+    return (betterReadlink(buffer, dest, size) == 0) ? REAP_RET_OK : translateErrno();
 }
