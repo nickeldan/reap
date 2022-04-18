@@ -1,8 +1,8 @@
 #ifndef REAP_ITERATE_MAP_H
 #define REAP_ITERATE_MAP_H
 
-#include <stdint.h>
 #include <stdio.h>
+#include <sys/mman.h>
 
 #include "definitions.h"
 
@@ -11,8 +11,8 @@ typedef struct reapMapIterator {
 } reapMapIterator;
 
 typedef struct reapMapResult {
-    uintptr_t start;
-    uintptr_t end;
+    unsigned long start;
+    unsigned long end;
     int permissions;
     char file[REAP_SHORT_PATH_SIZE];
 } reapMapResult;
