@@ -5,3 +5,4 @@ deps.mk
 README.pdf
 test_pid_list
 test_open_fds
+test_get_maps

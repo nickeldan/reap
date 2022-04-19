@@ -42,6 +42,8 @@ int
 reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
 {
     int num_matches;
+    unsigned int line_length, major, minor;
+    unsigned long inode;
     char r, w, x;
     char line[256];
 
@@ -67,32 +69,19 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
             return REAP_RET_DONE;
         }
     }
+    line_length = strnlen(line, sizeof(line));
+    if (line[line_length - 1] == '\n') {
+        line[line_length - 1] = '\0';
+    }
 
-#define FIELD_WIDTH   (REAP_SHORT_PATH_SIZE - 1)
-#define STRINGIFY(x)  STRINGIFY2(x)
-#define STRINGIFY2(x) #x
-    num_matches = sscanf(line, "%lx-%lx %c%c%c%*c %*s %*s %*s %" STRINGIFY(FIELD_WIDTH) "s", &result->start,
-                         &result->end, &r, &w, &x, result->file);
-#undef FIELD_WIDTH
-#undef STRINGIFY
-#undef STRINGIFY2
-
-    if (num_matches < 2) {
-#ifdef REAP_USE_ERROR_BUFFER
-        unsigned int line_length;
-
-        line_length = strnlen(line, sizeof(line));
-        if (line_length > 0 && line[line_length - 1] == '\n') {
-            line[line_length - 1] = '\0';
-        }
-
+    num_matches = sscanf(line, "%lx-%lx %c%c%c%*c %x %u:%u %lu %s", &result->start, &result->end, &r, &w, &x,
+                         &result->offset, &major, &minor, &inode, result->file);
+    if (num_matches < 9) {
         EMIT_ERROR("Malformed line in maps file: %s", line);
-#endif
-
         return REAP_RET_OTHER;
     }
 
-    if (num_matches == 2) {
+    if (num_matches == 9) {
         result->file[0] = '\0';
     }
 
@@ -106,6 +95,10 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
     if (x == 'x') {
         result->permissions |= PROT_EXEC;
     }
+
+    result->major_dev = major;
+    result->minor_dev = minor;
+    result->inode = inode;
 
     return REAP_RET_OK;
 }

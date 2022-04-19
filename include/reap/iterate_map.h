@@ -13,7 +13,11 @@ typedef struct reapMapIterator {
 typedef struct reapMapResult {
     unsigned long start;
     unsigned long end;
+    unsigned int offset;
     int permissions;
+    dev_t major_dev;
+    dev_t minor_dev;
+    ino_t inode;
     char file[REAP_SHORT_PATH_SIZE];
 } reapMapResult;
 
