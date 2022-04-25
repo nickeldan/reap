@@ -15,8 +15,7 @@ typedef struct reapMapResult {
     unsigned long end;
     unsigned int offset;
     int permissions;
-    dev_t major_dev;
-    dev_t minor_dev;
+    dev_t device;
     ino_t inode;
     char file[REAP_SHORT_PATH_SIZE];
 } reapMapResult;

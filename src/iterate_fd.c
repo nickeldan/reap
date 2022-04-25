@@ -1,8 +1,8 @@
-#include <errno.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include <reap/iterate_fd.h>
@@ -53,6 +53,7 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
     char *endptr;
     char buffer[100];
     struct dirent *entry;
+    struct stat fs;
 
     if (!iterator || !iterator->dir || !result) {
         if (!iterator) {
@@ -98,6 +99,15 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
         EMIT_ERROR("readlink failed on %s: %s", buffer, strerror(local_errno));
         return translateErrno(local_errno);
     }
+
+    if (stat(buffer, &fs) != 0) {
+        int local_errno = errno;
+
+        EMIT_ERROR("stat failed on %s: %s", buffer, strerror(local_errno));
+        return translateErrno(local_errno);
+    }
+    result->device = fs.st_dev;
+    result->inode = fs.st_ino;
 
     return REAP_RET_OK;
 }

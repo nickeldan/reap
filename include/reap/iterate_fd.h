@@ -12,6 +12,8 @@ typedef struct reapFdIterator {
 
 typedef struct reapFdResult {
     int fd;
+    dev_t device;
+    ino_t inode;
     char file[REAP_SHORT_PATH_SIZE];
 } reapFdResult;
 

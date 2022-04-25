@@ -6,6 +6,7 @@ REAP_SOURCE_FILES := $(wildcard $(REAP_DIR)/src/*.c)
 REAP_OBJECT_FILES := $(patsubst %.c,%.o,$(REAP_SOURCE_FILES))
 REAP_HEADER_FILES := $(wildcard $(REAP_DIR)/include/reap/*.h)
 REAP_INCLUDE_DIR := $(REAP_DIR)/include
+REAP_INCLUDE_FLAGS := -I$(REAP_INCLUDE_DIR)
 
 REAP_DEPS_FILE := $(REAP_DIR)/deps.mk
 DEPS_FILES += $(REAP_DEPS_FILE)
@@ -17,8 +18,8 @@ ifneq ($(MAKECMDGOALS),clean)
 $(REAP_DEPS_FILE): $(REAP_SOURCE_FILES) $(REAP_HEADER_FILES)
 	rm -f $@
 	for file in $(REAP_SOURCE_FILES); do \
-	    echo "$(REAP_DIR)/src/`$(CC) -I$(REAP_INCLUDE_DIR) -MM $$file`" >> $@ && \
-	    echo '\t$$(CC) $$(CFLAGS) -fpic -ffunction-sections -I$(REAP_INCLUDE_DIR) -c $$< -o $$@' >> $@; \
+	    echo "$(REAP_DIR)/src/`$(CC) $(REAP_INCLUDE_FLAGS) -MM $$file`" >> $@ && \
+	    echo '\t$$(CC) $$(CFLAGS) -fpic -ffunction-sections $(REAP_INCLUDE_FLAGS) -c $$< -o $$@' >> $@; \
 	done
 include $(REAP_DEPS_FILE)
 

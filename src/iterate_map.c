@@ -1,3 +1,5 @@
+#include <linux/kdev_t.h>
+
 #include <reap/iterate_map.h>
 
 #include "internal.h"
@@ -96,8 +98,7 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
         result->permissions |= PROT_EXEC;
     }
 
-    result->major_dev = major;
-    result->minor_dev = minor;
+    result->device = MKDEV(major, minor);
     result->inode = inode;
 
     return REAP_RET_OK;
