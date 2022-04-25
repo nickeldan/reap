@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 #include <reap/reap.h>
 
@@ -53,6 +54,14 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info)
 
     if (betterReadlink(buffer, info->exe, sizeof(info->exe)) == -1) {
         int local_errno = errno;
+
+        if (local_errno == ENOENT) {
+            struct stat fs;
+
+            if (lstat(buffer, &fs) == 0) {
+                local_errno = EACCES;
+            }
+        }
 
         EMIT_ERROR("readlink failed on %s: %s", buffer, strerror(local_errno));
         return translateErrno(local_errno);
