@@ -43,6 +43,8 @@ main(int argc, char **argv)
                result.file);
     }
 
+    reapMapIteratorClose(&iterator);
+
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;
     }
@@ -54,6 +56,5 @@ main(int argc, char **argv)
 #endif
     }
 
-    reapMapIteratorClose(&iterator);
     return ret;
 }

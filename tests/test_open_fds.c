@@ -26,13 +26,19 @@ main(int argc, char **argv)
 
     ret = reapFdIteratorInit(pid, &iterator);
     if (ret != REAP_RET_OK) {
+#ifdef REAP_USE_ERROR_BUFFER
+        fprintf(stderr, "reapFdIteratorInit: %s\n", reapGetError());
+#else
         fprintf(stderr, "reapFdIteratorInit: %s\n", reapErrorString(ret));
+#endif
         return ret;
     }
 
     while ((ret = reapFdIteratorNext(&iterator, &result)) == REAP_RET_OK) {
         printf("%i: %s\n", result.fd, result.file);
     }
+
+    reapFdIteratorClose(&iterator);
 
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;
@@ -45,6 +51,5 @@ main(int argc, char **argv)
 #endif
     }
 
-    reapFdIteratorClose(&iterator);
     return ret;
 }

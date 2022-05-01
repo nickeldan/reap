@@ -11,7 +11,11 @@ main()
 
     ret = reapProcIteratorInit(&iterator);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapProcIteratorInit: %s", reapErrorString(ret));
+#ifdef REAP_USE_ERROR_BUFFER
+        fprintf(stderr, "reapProcIteratorInit: %s\n", reapGetError());
+#else
+        fprintf(stderr, "reapProcIteratorInit: %s\n", reapErrorString(ret));
+#endif
         return ret;
     }
 
