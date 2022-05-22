@@ -46,6 +46,6 @@ void
 reapNet6IteratorClose(reapNet6Iterator *iterator);
 
 int
-reapNet6IteratorNext(const reapNet6Iterator *iterator, reapNetResult *result);
+reapNet6IteratorNext(const reapNet6Iterator *iterator, reapNet6Result *result);
 
 #endif  // REAP_ITERATE_NET_H

@@ -161,7 +161,7 @@ reapNet6IteratorClose(reapNet6Iterator *iterator)
 }
 
 int
-reapNetIterator6Next(const reapNet6Iterator *iterator, reapNet6Result *result)
+reapNet6IteratorNext(const reapNet6Iterator *iterator, reapNet6Result *result)
 {
     unsigned int local_port, remote_port;
     unsigned long inode_long;
