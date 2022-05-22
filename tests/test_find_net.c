@@ -82,11 +82,11 @@ showResults6(bool tcp)
 
         printf("(%lu) ", (unsigned long)result.inode);
         if (result.remote.sin6_port == 0) {
-            printf("Listening on %s:%u\n", local_buffer, result.local.sin6_port);
+            printf("Listening on [%s]:%u\n", local_buffer, result.local.sin6_port);
         }
         else {
             inet_ntop(AF_INET6, &result.remote.sin6_addr, remote_buffer, sizeof(remote_buffer));
-            printf("%s:%u communicating with %s:%u\n", local_buffer, result.local.sin6_port, remote_buffer,
+            printf("%s:%u communicating with [%s]:%u\n", local_buffer, result.local.sin6_port, remote_buffer,
                    result.remote.sin6_port);
         }
     }
