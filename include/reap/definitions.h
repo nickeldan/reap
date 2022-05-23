@@ -6,7 +6,7 @@
 
 #include "config.h"
 
-#define REAP_VERSION "0.2.0"
+#define REAP_VERSION "0.1.0"
 
 enum reapRetValue {
     REAP_RET_OK,
