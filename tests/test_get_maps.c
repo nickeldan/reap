@@ -3,6 +3,8 @@
 
 #include <reap/iterate_map.h>
 
+#include "common.h"
+
 int
 main(int argc, char **argv)
 {
@@ -26,11 +28,7 @@ main(int argc, char **argv)
 
     ret = reapMapIteratorInit(pid, &iterator);
     if (ret != REAP_RET_OK) {
-#ifdef REAP_USE_ERROR_BUFFER
-        fprintf(stderr, "reapMapIteratorInit: %s\n", reapGetError());
-#else
-        fprintf(stderr, "reapMapIteratorInit: %s\n", reapErrorString(ret));
-#endif
+        fprintf(stderr, "reapMapIteratorInit: %s\n", ERROR(ret));
         return ret;
     }
 
@@ -49,11 +47,7 @@ main(int argc, char **argv)
         ret = REAP_RET_OK;
     }
     else {
-#ifdef REAP_USE_ERROR_BUFFER
-        fprintf(stderr, "reapMapIteratorNext: %s\n", reapGetError());
-#else
-        fprintf(stderr, "reapMapIteratorNext: %s\n", reapErrorString(ret));
-#endif
+        fprintf(stderr, "reapMapIteratorNext: %s\n", ERROR(ret));
     }
 
     return ret;

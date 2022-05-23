@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <reap/reap.h>
+#include <reap/iterate_fd.h>
+
+#include "common.h"
 
 int
 main(int argc, char **argv)
@@ -26,11 +28,7 @@ main(int argc, char **argv)
 
     ret = reapFdIteratorInit(pid, &iterator);
     if (ret != REAP_RET_OK) {
-#ifdef REAP_USE_ERROR_BUFFER
-        fprintf(stderr, "reapFdIteratorInit: %s\n", reapGetError());
-#else
-        fprintf(stderr, "reapFdIteratorInit: %s\n", reapErrorString(ret));
-#endif
+        fprintf(stderr, "reapFdIteratorInit: %s\n", ERROR(ret));
         return ret;
     }
 
@@ -44,11 +42,7 @@ main(int argc, char **argv)
         ret = REAP_RET_OK;
     }
     else {
-#ifdef REAP_USE_ERROR_BUFFER
-        fprintf(stderr, "reapFdIteratorNext: %s\n", reapGetError());
-#else
-        fprintf(stderr, "reapFdIteratorNext: %s\n", reapErrorString(ret));
-#endif
+        fprintf(stderr, "reapFdIteratorNext: %s\n", ERROR(ret));
     }
 
     return ret;

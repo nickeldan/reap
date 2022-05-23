@@ -36,8 +36,8 @@ uninstall:
 
 tests: $(TESTS)
 
-test_%: tests/test_%.c $(REAP_STATIC_LIBRARY)
-	$(CC) $(CFLAGS) -I$(REAP_INCLUDE_DIR) -o $@ $^
+test_%: tests/test_%.c tests/common.h $(REAP_STATIC_LIBRARY) $(REAP_HEADER_FILES)
+	$(CC) $(CFLAGS) -I$(REAP_INCLUDE_DIR) -o $@ $(filter-out %.h,$^)
 
 clean: $(CLEAN_TARGETS)
 	@rm -f $(TESTS) $(DEPS_FILES)

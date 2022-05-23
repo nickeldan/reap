@@ -1,7 +1,9 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 
-#include <reap/reap.h>
+#include <reap/iterate_net.h>
+
+#include "common.h"
 
 static int
 showResults(bool tcp)
@@ -12,13 +14,7 @@ showResults(bool tcp)
 
     ret = reapNetIteratorInit(&iterator, tcp);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapNetIteratorInit: %s\n",
-#ifdef REAP_USE_ERROR_BUFFER
-                reapGetError()
-#else
-                reapErrorString(ret)
-#endif
-        );
+        fprintf(stderr, "reapNetIteratorInit: %s\n", ERROR(ret));
         return ret;
     }
 
@@ -44,13 +40,7 @@ showResults(bool tcp)
         ret = REAP_RET_OK;
     }
     else {
-        fprintf(stderr, "reapNetIteratorNext: %s\n",
-#ifdef REAP_USE_ERROR_BUFFER
-                reapGetError()
-#else
-                reapErrorString(ret)
-#endif
-        );
+        fprintf(stderr, "reapNetIteratorNext: %s\n", ERROR(ret));
     }
 
     return ret;
@@ -65,13 +55,7 @@ showResults6(bool tcp)
 
     ret = reapNet6IteratorInit(&iterator, tcp);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapNetIterator6Init: %s\n",
-#ifdef REAP_USE_ERROR_BUFFER
-                reapGetError()
-#else
-                reapErrorString(ret)
-#endif
-        );
+        fprintf(stderr, "reapNetIterator6Init: %s\n", ERROR(ret));
         return ret;
     }
 
@@ -97,13 +81,7 @@ showResults6(bool tcp)
         ret = REAP_RET_OK;
     }
     else {
-        fprintf(stderr, "reapNetIteratorNext: %s\n",
-#ifdef REAP_USE_ERROR_BUFFER
-                reapGetError()
-#else
-                reapErrorString(ret)
-#endif
-        );
+        fprintf(stderr, "reapNetIteratorNext: %s\n", ERROR(ret));
     }
 
     return ret;

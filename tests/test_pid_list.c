@@ -1,6 +1,8 @@
 #include <stdio.h>
 
-#include <reap/reap.h>
+#include <reap/iterate_proc.h>
+
+#include "common.h"
 
 int
 main()
@@ -11,11 +13,7 @@ main()
 
     ret = reapProcIteratorInit(&iterator);
     if (ret != REAP_RET_OK) {
-#ifdef REAP_USE_ERROR_BUFFER
-        fprintf(stderr, "reapProcIteratorInit: %s\n", reapGetError());
-#else
-        fprintf(stderr, "reapProcIteratorInit: %s\n", reapErrorString(ret));
-#endif
+        fprintf(stderr, "reapProcIteratorInit: %s\n", ERROR(ret));
         return ret;
     }
 
@@ -29,11 +27,7 @@ main()
         ret = REAP_RET_OK;
     }
     else {
-#ifdef REAP_USE_ERROR_BUFFER
-        fprintf(stderr, "reapProcIteratorNext: %s\n", reapGetError());
-#else
-        fprintf(stderr, "reapProcIteratorNext: %s\n", reapErrorString(ret));
-#endif
+        fprintf(stderr, "reapProcIteratorNext: %s\n", ERROR(ret));
     }
 
     return ret;
