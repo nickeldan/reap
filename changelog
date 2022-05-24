@@ -1,2 +1,5 @@
+0.1.1:
+    - Fixed a typo in the logic that parses IPv6 addresses.
+
 0.1.0:
     - Added the reapNetIterator and reapNet6Iterator logic.

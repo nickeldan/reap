@@ -52,7 +52,7 @@ populateAddr6(struct sockaddr_in6 *addr, const char *hex)
 {
     addr->sin6_family = AF_INET6;
     for (unsigned int k = 0; k < ARRAY_LENGTH(addr->sin6_addr.s6_addr); k++) {
-        addr->sin6_addr.s6_addr[k] = (hexToNum(hex[2 * k]) << 4) | hexToNum(hex[2 * k]);
+        addr->sin6_addr.s6_addr[k] = (hexToNum(hex[2 * k]) << 4) | hexToNum(hex[2 * k + 1]);
     }
 }
 

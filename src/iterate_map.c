@@ -44,7 +44,7 @@ int
 reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
 {
     int num_matches;
-    unsigned int line_length, major, minor;
+    unsigned int major, minor;
     unsigned long inode;
     char r, w, x;
     char line[256];
@@ -71,15 +71,18 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
             return REAP_RET_DONE;
         }
     }
-    line_length = strnlen(line, sizeof(line));
-    if (line[line_length - 1] == '\n') {
-        line[line_length - 1] = '\0';
-    }
-
     num_matches = sscanf(line, "%lx-%lx %c%c%c%*c %x %u:%u %lu %s", &result->start, &result->end, &r, &w, &x,
                          &result->offset, &major, &minor, &inode, result->file);
     if (num_matches < 9) {
+#ifdef REAP_USE_ERROR_BUFFER
+        unsigned int line_length;
+
+        line_length = strnlen(line, sizeof(line));
+        if (line[line_length - 1] == '\n') {
+            line[line_length - 1] = '\0';
+        }
         EMIT_ERROR("Malformed line in maps file: %s", line);
+#endif
         return REAP_RET_OTHER;
     }
 
