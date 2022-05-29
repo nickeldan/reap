@@ -1,3 +1,6 @@
+0.2.0:
+    - No longer using sockaddr_in and sockaddr_in6 structs in the net iterator results.
+
 0.1.1:
     - Fixed a typo in the logic that parses IPv6 addresses.
 

@@ -1,3 +1,5 @@
+#include <arpa/inet.h>
+
 #include <reap/iterate_net.h>
 
 #include "internal.h"
@@ -33,6 +35,17 @@ iteratorInit(FILE **f, const char *file)
     return REAP_RET_OK;
 }
 
+static void
+storeU32(uint32_t num, uint8_t *dst)
+{
+    num = htonl(num);
+
+    for (int k = 3; k >= 0; k--) {
+        dst[k] = num & 0xff;
+        num >>= 8;
+    }
+}
+
 static unsigned char
 hexToNum(char c)
 {
@@ -48,11 +61,10 @@ hexToNum(char c)
 }
 
 static void
-populateAddr6(struct sockaddr_in6 *addr, const char *hex)
+populateAddr6(uint8_t *addr, const char *hex)
 {
-    addr->sin6_family = AF_INET6;
-    for (unsigned int k = 0; k < ARRAY_LENGTH(addr->sin6_addr.s6_addr); k++) {
-        addr->sin6_addr.s6_addr[k] = (hexToNum(hex[2 * k]) << 4) | hexToNum(hex[2 * k + 1]);
+    for (int k = 0; k < IPV6_SIZE; k++) {
+        addr[k] = (hexToNum(hex[2 * k]) << 4) | hexToNum(hex[2 * k + 1]);
     }
 }
 
@@ -124,13 +136,11 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
         return REAP_RET_OTHER;
     }
 
-    result->local.sin_family = AF_INET;
-    result->local.sin_addr.s_addr = local_addr;
-    result->local.sin_port = local_port;
+    storeU32(local_addr, result->local.address);
+    result->local.port = local_port;
 
-    result->remote.sin_family = AF_INET;
-    result->remote.sin_addr.s_addr = remote_addr;
-    result->remote.sin_port = remote_port;
+    storeU32(remote_addr, result->remote.address);
+    result->remote.port = remote_port;
 
     result->inode = inode_long;
 
@@ -205,10 +215,12 @@ reapNet6IteratorNext(const reapNet6Iterator *iterator, reapNet6Result *result)
         return REAP_RET_OTHER;
     }
 
-    populateAddr6(&result->local, local_addr);
-    result->local.sin6_port = local_port;
-    populateAddr6(&result->remote, remote_addr);
-    result->remote.sin6_port = remote_port;
+    populateAddr6(result->local.address, local_addr);
+    result->local.port = local_port;
+
+    populateAddr6(result->remote.address, remote_addr);
+    result->remote.port = remote_port;
+
     result->inode = inode_long;
 
     return REAP_RET_OK;

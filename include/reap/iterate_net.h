@@ -1,21 +1,33 @@
 #ifndef REAP_ITERATE_NET_H
 #define REAP_ITERATE_NET_H
 
-#include <netinet/in.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
 
 #include "definitions.h"
+
+#ifndef IPV4_SIZE
+#define IPV4_SIZE 4
+#endif
+#ifndef IPV6_SIZE
+#define IPV6_SIZE 16
+#endif
 
 typedef struct reapNetIterator {
     FILE *file;
     unsigned int tcp : 1;
 } reapNetIterator;
 
+typedef struct reapNetPeer {
+    uint16_t port;
+    uint8_t address[IPV4_SIZE];
+} reapNetPeer;
+
 typedef struct reapNetResult {
-    struct sockaddr_in local;
-    struct sockaddr_in remote;
+    reapNetPeer local;
+    reapNetPeer remote;
     ino_t inode;
 } reapNetResult;
 
@@ -24,9 +36,14 @@ typedef struct reapNet6Iterator {
     unsigned int tcp : 1;
 } reapNet6Iterator;
 
+typedef struct reapNet6Peer {
+    uint16_t port;
+    uint8_t address[IPV6_SIZE];
+} reapNet6Peer;
+
 typedef struct reapNet6Result {
-    struct sockaddr_in6 local;
-    struct sockaddr_in6 remote;
+    reapNet6Peer local;
+    reapNet6Peer remote;
     ino_t inode;
 } reapNet6Result;
 
