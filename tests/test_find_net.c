@@ -6,13 +6,13 @@
 #include "common.h"
 
 static int
-showResults(bool tcp)
+showResults(bool udp)
 {
     int ret;
     reapNetIterator iterator;
     reapNetResult result;
 
-    ret = reapNetIteratorInit(&iterator, tcp);
+    ret = reapNetIteratorInit(&iterator, REAP_NET_FLAG_UDP * udp);
     if (ret != REAP_RET_OK) {
         fprintf(stderr, "reapNetIteratorInit: %s\n", ERROR(ret));
         return ret;
@@ -47,19 +47,19 @@ showResults(bool tcp)
 }
 
 static int
-showResults6(bool tcp)
+showResults6(bool udp)
 {
     int ret;
-    reapNet6Iterator iterator;
-    reapNet6Result result;
+    reapNetIterator iterator;
+    reapNetResult result;
 
-    ret = reapNet6IteratorInit(&iterator, tcp);
+    ret = reapNetIteratorInit(&iterator, (REAP_NET_FLAG_UDP * udp) | REAP_NET_FLAG_IPV6);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapNetIterator6Init: %s\n", ERROR(ret));
+        fprintf(stderr, "reapNetIteratorInit: %s\n", ERROR(ret));
         return ret;
     }
 
-    while ((ret = reapNet6IteratorNext(&iterator, &result)) == REAP_RET_OK) {
+    while ((ret = reapNetIteratorNext(&iterator, &result)) == REAP_RET_OK) {
         char local_buffer[INET6_ADDRSTRLEN], remote_buffer[INET6_ADDRSTRLEN];
 
         inet_ntop(AF_INET6, &result.local.address, local_buffer, sizeof(local_buffer));
@@ -75,7 +75,7 @@ showResults6(bool tcp)
         }
     }
 
-    reapNet6IteratorClose(&iterator);
+    reapNetIteratorClose(&iterator);
 
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;
@@ -93,19 +93,19 @@ main()
     int ret;
 
     printf("TCP:\n");
-    ret = showResults(true);
+    ret = showResults(false);
     if (ret != REAP_RET_OK) {
         return ret;
     }
-    ret = showResults6(true);
+    ret = showResults6(false);
     if (ret != REAP_RET_OK) {
         return ret;
     }
 
     printf("\nUDP:\n");
-    ret = showResults(false);
+    ret = showResults(true);
     if (ret != REAP_RET_OK) {
         return ret;
     }
-    return showResults6(false);
+    return showResults6(true);
 }

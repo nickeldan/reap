@@ -17,52 +17,33 @@
 
 typedef struct reapNetIterator {
     FILE *file;
-    unsigned int tcp : 1;
+    unsigned int udp : 1;
+    unsigned int ipv6 : 1;
 } reapNetIterator;
 
 typedef struct reapNetPeer {
     uint16_t port;
-    uint8_t address[IPV4_SIZE];
+    uint8_t address[IPV6_SIZE];
 } reapNetPeer;
 
 typedef struct reapNetResult {
     reapNetPeer local;
     reapNetPeer remote;
     ino_t inode;
+    unsigned int udp : 1;
+    unsigned int ipv6 : 1;
 } reapNetResult;
 
-typedef struct reapNet6Iterator {
-    FILE *file;
-    unsigned int tcp : 1;
-} reapNet6Iterator;
-
-typedef struct reapNet6Peer {
-    uint16_t port;
-    uint8_t address[IPV6_SIZE];
-} reapNet6Peer;
-
-typedef struct reapNet6Result {
-    reapNet6Peer local;
-    reapNet6Peer remote;
-    ino_t inode;
-} reapNet6Result;
+#define REAP_NET_FLAG_UDP  0x01
+#define REAP_NET_FLAG_IPV6 0x02
 
 int
-reapNetIteratorInit(reapNetIterator *iterator, bool tcp);
+reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags);
 
 void
 reapNetIteratorClose(reapNetIterator *iterator);
 
 int
 reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result);
-
-int
-reapNet6IteratorInit(reapNet6Iterator *iterator, bool tcp);
-
-void
-reapNet6IteratorClose(reapNet6Iterator *iterator);
-
-int
-reapNet6IteratorNext(const reapNet6Iterator *iterator, reapNet6Result *result);
 
 #endif  // REAP_ITERATE_NET_H
