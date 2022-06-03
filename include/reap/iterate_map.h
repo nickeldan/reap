@@ -30,7 +30,7 @@ typedef struct reapMapResult {
     unsigned long start;             /**< The start of the memory section.*/
     unsigned long end;               /**< The end of the memory section.*/
     unsigned int offset;             /**< The offset of the memory section in the referent file.*/
-    int permissions;                 /**< The permissions of the memory seciton.*/
+    int permissions;                 /**< The permissions of the memory section.*/
     dev_t device;                    /**< The device number of the referent file.*/
     ino_t inode;                     /**< The inode of the referent file.*/
     char file[REAP_SHORT_PATH_SIZE]; /**< The name of the referent file.*/
