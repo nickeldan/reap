@@ -68,8 +68,8 @@ error occurs.  This buffer can be accessed with
 Process iteration
 -----------------
 
-A **reapProcIterator** can be used to iterate over all of running processes (at least, those for which the
-user has permission to access).
+A **reapProcIterator** can be used to iterate over all of the running processes (at least, those for which
+the user has permission to access).
 
 First, the iterator has to be initialized.
 
@@ -254,7 +254,7 @@ The iterator must be closed when it is no longer needed.
 Building REAP
 =============
 
-Shared and static libraries are built using make.  Adding "debug-yes" to the make invocation will disable
+Shared and static libraries are built using make.  Adding "debug=yes" to the make invocation will disable
 optimization and build the libraries with debugging symbols.
 
 You can also include REAP in a larger project by including make.mk.  Before doing so, however, the
