@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include <stdbool.h>
 #include <stdio.h>
 
 #include <reap/iterate_net.h>

@@ -9,7 +9,6 @@
 #ifndef REAP_ITERATE_NET_H
 #define REAP_ITERATE_NET_H
 
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
