@@ -108,6 +108,7 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
     }
     result->device = fs.st_dev;
     result->inode = fs.st_ino;
+    result->mode = fs.st_mode;
 
     return REAP_RET_OK;
 }

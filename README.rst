@@ -3,8 +3,8 @@ REAP
 ====
 
 :Author: Daniel Walker
-:Version: 0.3.0
-:Date: 2022-05-29
+:Version: 0.4.0
+:Date: 2022-06-23
 
 *"We will encourage you to develop the three great virtues of a programmer: laziness, impatience, and hubris.”* - Larry Wall
 
@@ -129,6 +129,7 @@ where **reapFdResult** is defined as
         int fd;
         dev_t device;
         ino_t inode;
+        mode_t mode;
         char file[REAP_SHORT_PATH_SIZE];
     } reapFdResult;
 

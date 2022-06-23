@@ -31,6 +31,7 @@ typedef struct reapFdResult {
     int fd;                          /**< The file descriptor.*/
     dev_t device;                    /**< The device number of the referent file.*/
     ino_t inode;                     /**< The inode of the referent file.*/
+    mode_t mode;                     /**< The type and mode of the referent file.*/
     char file[REAP_SHORT_PATH_SIZE]; /**< The name of the referent file.*/
 } reapFdResult;
 
