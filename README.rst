@@ -176,7 +176,7 @@ where **reapMapResult** is defined as
         int permissions; // The permissions of the memory section.
         dev_t device; // The device number of the referent file (if any).
         ino_t inode; // The inode of the referent file (if any).
-        char file[REAP_SHORT_PATH_SIZE]; // The name of the memory section (if any).
+        char name[REAP_SHORT_PATH_SIZE]; // The name of the memory section (if any).
     } reapMapResult;
 
 The permissions are some bitwise-OR combination of **PROT_READ**, **PROT_WRITE**, and **PROT_EXEC** from
