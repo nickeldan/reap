@@ -112,7 +112,7 @@ reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags)
     if (!fgets(line, sizeof(line), iterator->file)) {
         EMIT_ERROR("Failed to read from %s", buffer);
         reapNetIteratorClose(iterator);
-        return REAP_RET_OTHER;
+        return REAP_RET_FILE_READ;
     }
 
     return REAP_RET_OK;
@@ -153,7 +153,7 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
 
             EMIT_ERROR("Failed to read from %s", formFile(iterator, buffer, sizeof(buffer)));
 #endif
-            return REAP_RET_OTHER;
+            return REAP_RET_FILE_READ;
         }
         else {
             return REAP_RET_DONE;

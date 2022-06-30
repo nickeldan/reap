@@ -65,14 +65,14 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
     if (!fgets(line, sizeof(line), iterator->file)) {
         if (ferror(iterator->file)) {
             EMIT_ERROR("Failed to read from maps file");
-            return REAP_RET_OTHER;
+            return REAP_RET_FILE_READ;
         }
         else {
             return REAP_RET_DONE;
         }
     }
     num_matches = sscanf(line, "%lx-%lx %c%c%c%*c %x %u:%u %lu %s", &result->start, &result->end, &r, &w, &x,
-                         &result->offset, &major, &minor, &inode, result->file);
+                         &result->offset, &major, &minor, &inode, result->name);
     if (num_matches < 9) {
 #ifdef REAP_USE_ERROR_BUFFER
         unsigned int line_length;
@@ -87,7 +87,7 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
     }
 
     if (num_matches == 9) {
-        result->file[0] = '\0';
+        result->name[0] = '\0';
     }
 
     result->permissions = 0;

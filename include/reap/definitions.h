@@ -17,7 +17,7 @@
 /**
  * @brief REAP's version.
  */
-#define REAP_VERSION "0.4.0"
+#define REAP_VERSION "0.5.0"
 
 /**
  * @brief Return values.
@@ -30,6 +30,7 @@ enum reapRetValue {
     REAP_RET_NO_PERMISSION,  /**< No permission to access a requested resource.*/
     REAP_RET_NOT_FOUND,      /**< A requested resource was not found.*/
     REAP_RET_TOO_MANY_LINKS, /**< Too many symbolic links encountered.*/
+    REAP_RET_FILE_READ,      /**< Failed to read from a file.*/
     REAP_RET_OTHER,          /**< Catch-all error.*/
 };
 

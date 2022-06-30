@@ -38,7 +38,7 @@ main(int argc, char **argv)
         printf("%c", (result.permissions & PROT_WRITE) ? 'w' : '-');
         printf("%c", (result.permissions & PROT_EXEC) ? 'x' : '-');
         printf(" %08x %u %lu %s\n", result.offset, (unsigned int)result.device, (unsigned long)result.inode,
-               result.file);
+               result.name);
     }
 
     reapMapIteratorClose(&iterator);

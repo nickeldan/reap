@@ -13,7 +13,7 @@ translateErrno(int errno_value)
     case ELOOP: return REAP_RET_TOO_MANY_LINKS;
     case ENOENT:
     case ENOTDIR:
-    case EIO: return REAP_RET_NOT_FOUND;
+    case EIO: return REAP_RET_FILE_READ;
     case ENOMEM: return REAP_RET_OUT_OF_MEMORY;
     default: return REAP_RET_OTHER;
     }
