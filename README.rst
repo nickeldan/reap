@@ -3,8 +3,8 @@ REAP
 ====
 
 :Author: Daniel Walker
-:Version: 0.5.0
-:Date: 2022-06-29
+:Version: 0.6.0
+:Date: 2022-07-04
 
 *"We will encourage you to develop the three great virtues of a programmer: laziness, impatience, and hubris.”* - Larry Wall
 
@@ -213,6 +213,7 @@ flags are
 
 * **REAP_NET_FLAG_UDP**: Find UDP sockets.
 * **REAP_NET_FLAG_IPV6**: Find IPv6 sockets.
+* **REAP_NET_FLAG_DOMAIN**: Find Unix domain sockets.  If this flag is specified, then all other flags are ignored.
 
 By default, the iterator will find TCP sockets over IPv4.
 
@@ -227,11 +228,21 @@ where **reapNetResult** is defined as
 .. code-block:: c
 
     typedef struct reapNetResult {
-        reapNetPeer local;
-        reapNetPeer remote;
+        union {
+            struct { // For IP sockets.
+                reapNetPeer local;
+                reapNetPeer remote;
+            };
+            struct { // For Unix domain sockets.
+                char path[108]; // Actually, the size is the same as that of the sun_path field of struct sockaddr_un.
+                int socket_type; // E.g., SOCK_STREAM, SOCK_DGRAM, SOCK_SEQPACKET.
+                unsigned int connected : 1;
+            };
+        };
         ino_t inode;
         unsigned int udp : 1;
         unsigned int ipv6 : 1;
+        unsigned int domain : 1;
     } reapNetResult;
 
 where **reapNetPeer** is defined as
@@ -242,6 +253,9 @@ where **reapNetPeer** is defined as
         uint16_t port;
         uint8_t address[16];
     } reapNetPeer;
+
+If representing a Unix domain socket which is connected to an abstract socket address (i.e., where the first
+character of the path is a null byte), then the first character of **path** will be **'@'**.
 
 **reapNetIteratorNext** returns **REAP_RET_OK** when yielding a result, **REAP_RET_DONE** when the iterator
 has been exhausted, and an error code otherwise.

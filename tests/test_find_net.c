@@ -88,6 +88,53 @@ showResults6(bool udp)
     return ret;
 }
 
+static int
+showResultsDomain(void)
+{
+    int ret;
+    reapNetIterator iterator;
+    reapNetResult result;
+
+    ret = reapNetIteratorInit(&iterator, REAP_NET_FLAG_DOMAIN);
+    if (ret != REAP_RET_OK) {
+        fprintf(stderr, "reapNetIteratorInit: %s\n", ERROR(ret));
+        return ret;
+    }
+
+    while ((ret = reapNetIteratorNext(&iterator, &result)) == REAP_RET_OK) {
+        const char *type_str;
+
+        printf("(%lu) ", (unsigned long)result.inode);
+        switch (result.socket_type) {
+        case SOCK_STREAM: type_str = "stream"; break;
+        case SOCK_DGRAM: type_str = "datagram"; break;
+        case SOCK_SEQPACKET: type_str = "seqpacket"; break;
+        }
+        printf("(%s) ", type_str);
+        if (result.connected) {
+            printf("Connected");
+            if (result.path[0] != '\0') {
+                printf(" to %s", result.path);
+            }
+        }
+        else {
+            printf("Listening on %s", result.path);
+        }
+        printf("\n");
+    }
+
+    reapNetIteratorClose(&iterator);
+
+    if (ret == REAP_RET_DONE) {
+        ret = REAP_RET_OK;
+    }
+    else {
+        fprintf(stderr, "reapNetIteratorNext: %s\n", ERROR(ret));
+    }
+
+    return ret;
+}
+
 int
 main()
 {
@@ -108,5 +155,11 @@ main()
     if (ret != REAP_RET_OK) {
         return ret;
     }
-    return showResults6(true);
+    ret = showResults6(true);
+    if (ret != REAP_RET_OK) {
+        return ret;
+    }
+
+    printf("\nDomain:\n");
+    return showResultsDomain();
 }

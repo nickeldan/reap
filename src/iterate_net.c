@@ -4,12 +4,42 @@
 
 #include "internal.h"
 
+// Coped from uapi/linux/net.h in the Linux kernel headers.
+typedef enum {
+    SS_FREE = 0,     /* not allocated		*/
+    SS_UNCONNECTED,  /* unconnected to any socket	*/
+    SS_CONNECTING,   /* in process of connecting	*/
+    SS_CONNECTED,    /* connected to socket		*/
+    SS_DISCONNECTING /* in process of disconnecting	*/
+} socket_state;
+
 static char *
 formFile(const reapNetIterator *iterator, char *dst, unsigned int size)
 {
-    snprintf(dst, size, "/proc/net/%sp%s", iterator->udp ? "ud" : "tc", iterator->ipv6 ? "6" : "");
+    if (iterator->domain) {
+        snprintf(dst, size, "/proc/net/unix");
+    }
+    else {
+        snprintf(dst, size, "/proc/net/%sp%s", iterator->udp ? "ud" : "tc", iterator->ipv6 ? "6" : "");
+    }
     return dst;
 }
+
+#ifdef REAP_USE_ERROR_BUFFER
+
+static char *
+stripLine(char *line)
+{
+    unsigned int len;
+
+    len = strlen(line);
+    if (len > 0 && line[len - 1] == '\n') {
+        line[len - 1] = '\0';
+    }
+    return line;
+}
+
+#endif
 
 static void
 storeU32(uint32_t num, uint8_t *dst)
@@ -34,6 +64,45 @@ hexToNum(char c)
     else {
         return c - 'a' + 10;
     }
+}
+
+static int
+nextUnix(const reapNetIterator *iterator, reapNetResult *result)
+{
+    char line[256];
+
+    while (fgets(line, sizeof(line), iterator->file)) {
+        unsigned int state;
+        unsigned long inode_long;
+        char path[256];
+
+        path[0] = '\0';
+        if (sscanf(line, "%*s %*s %*s %*s %i %u %lu %s", &result->socket_type, &state, &inode_long, path) <
+            3) {
+            EMIT_ERROR("Invalid line in /proc/net/unix: %s", stripLine(line));
+            return REAP_RET_OTHER;
+        }
+
+        if (state > SS_DISCONNECTING) {
+            EMIT_ERROR("Invalid socket state in /proc/net/unix: %u", state);
+            return REAP_RET_OTHER;
+        }
+
+        result->connected = (state == SS_CONNECTED);
+        if (path[0] == '\0' && !result->connected) {
+            continue;
+        }
+        snprintf(result->path, sizeof(result->path), "%s", path);
+        result->inode = inode_long;
+        return REAP_RET_OK;
+    }
+
+    if (ferror(iterator->file)) {
+        EMIT_ERROR("Failed to read from /proc/net/unix");
+        return REAP_RET_FILE_READ;
+    }
+
+    return REAP_RET_DONE;
 }
 
 static void
@@ -88,6 +157,7 @@ parseNet6Line(const char *line, reapNetResult *result)
 
     return REAP_RET_OK;
 }
+
 int
 reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags)
 {
@@ -100,6 +170,7 @@ reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags)
 
     iterator->udp = !!(flags & REAP_NET_FLAG_UDP);
     iterator->ipv6 = !!(flags & REAP_NET_FLAG_IPV6);
+    iterator->domain = !!(flags & REAP_NET_FLAG_DOMAIN);
 
     iterator->file = fopen(formFile(iterator, buffer, sizeof(buffer)), "r");
     if (!iterator->file) {
@@ -146,6 +217,14 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
         return REAP_RET_BAD_USAGE;
     }
 
+    result->udp = iterator->udp;
+    result->ipv6 = iterator->ipv6;
+    result->domain = iterator->domain;
+
+    if (iterator->domain) {
+        return nextUnix(iterator, result);
+    }
+
     if (!fgets(line, sizeof(line), iterator->file)) {
         if (ferror(iterator->file)) {
 #ifdef REAP_USE_ERROR_BUFFER
@@ -159,9 +238,6 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
             return REAP_RET_DONE;
         }
     }
-
-    result->udp = iterator->udp;
-    result->ipv6 = iterator->ipv6;
 
     ret = (iterator->ipv6 ? parseNet6Line : parseNet4Line)(line, result);
 #ifdef REAP_USE_ERROR_BUFFER
