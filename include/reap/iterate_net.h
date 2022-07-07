@@ -34,6 +34,10 @@
 #define STRUCT_FIELD_SIZE(type, field) sizeof(((type *)0)->field)
 #endif
 
+#define REAP_NET_FLAG_UDP    0x01
+#define REAP_NET_FLAG_IPV6   0x02
+#define REAP_NET_FLAG_DOMAIN 0x04
+
 /**
  * @brief Iterates over all open sockets in the network namespace.
  *
@@ -41,9 +45,7 @@
  */
 typedef struct reapNetIterator {
     FILE *file;
-    unsigned int udp : 1;
-    unsigned int ipv6 : 1;
-    unsigned int domain : 1;
+    unsigned int flags;
 } reapNetIterator;
 
 /**
@@ -70,15 +72,9 @@ typedef struct reapNetResult {
                 connected : 1; /**< Is the socket connected to another?  If not, then it's listening.*/
         };
     };
-    ino_t inode;             /**< The inode of the socket.*/
-    unsigned int udp : 1;    /**< Is this a UDP socket?*/
-    unsigned int ipv6 : 1;   /**< Is this socket over IPv6?*/
-    unsigned int domain : 1; /**< Is this a Unix domain socket?*/
+    ino_t inode;        /**< The inode of the socket.*/
+    unsigned int flags; /**< The flags passed to reapNetIteratorInit.*/
 } reapNetResult;
-
-#define REAP_NET_FLAG_UDP    0x01
-#define REAP_NET_FLAG_IPV6   0x02
-#define REAP_NET_FLAG_DOMAIN 0x04
 
 /**
  * @brief Initializes an iterator.

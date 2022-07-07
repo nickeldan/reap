@@ -3,8 +3,8 @@ REAP
 ====
 
 :Author: Daniel Walker
-:Version: 0.6.0
-:Date: 2022-07-04
+:Version: 0.7.0
+:Date: 2022-07-07
 
 *"We will encourage you to develop the three great virtues of a programmer: laziness, impatience, and hubris.”* - Larry Wall
 
@@ -240,9 +240,7 @@ where **reapNetResult** is defined as
             };
         };
         ino_t inode;
-        unsigned int udp : 1;
-        unsigned int ipv6 : 1;
-        unsigned int domain : 1;
+        unsigned int flags; // The flags that were passed to reapNetIteratorInit.
     } reapNetResult;
 
 where **reapNetPeer** is defined as

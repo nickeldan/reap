@@ -16,11 +16,12 @@ typedef enum {
 static char *
 formFile(const reapNetIterator *iterator, char *dst, unsigned int size)
 {
-    if (iterator->domain) {
+    if (iterator->flags & REAP_NET_FLAG_DOMAIN) {
         snprintf(dst, size, "/proc/net/unix");
     }
     else {
-        snprintf(dst, size, "/proc/net/%sp%s", iterator->udp ? "ud" : "tc", iterator->ipv6 ? "6" : "");
+        snprintf(dst, size, "/proc/net/%sp%s", iterator->flags & REAP_NET_FLAG_UDP ? "ud" : "tc",
+                 iterator->flags & REAP_NET_FLAG_IPV6 ? "6" : "");
     }
     return dst;
 }
@@ -92,7 +93,9 @@ nextUnix(const reapNetIterator *iterator, reapNetResult *result)
         if (path[0] == '\0' && !result->connected) {
             continue;
         }
-        snprintf(result->path, sizeof(result->path), "%s", path);
+        if (snprintf(result->path, sizeof(result->path), "%s", path) < 0) {
+            (void)0;  // Suppresses -Wformat-truncation warning.
+        }
         result->inode = inode_long;
         return REAP_RET_OK;
     }
@@ -168,10 +171,7 @@ reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags)
         return REAP_RET_BAD_USAGE;
     }
 
-    iterator->udp = !!(flags & REAP_NET_FLAG_UDP);
-    iterator->ipv6 = !!(flags & REAP_NET_FLAG_IPV6);
-    iterator->domain = !!(flags & REAP_NET_FLAG_DOMAIN);
-
+    iterator->flags = flags;
     iterator->file = fopen(formFile(iterator, buffer, sizeof(buffer)), "r");
     if (!iterator->file) {
         int local_errno = errno;
@@ -217,11 +217,9 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
         return REAP_RET_BAD_USAGE;
     }
 
-    result->udp = iterator->udp;
-    result->ipv6 = iterator->ipv6;
-    result->domain = iterator->domain;
+    result->flags = iterator->flags;
 
-    if (iterator->domain) {
+    if (iterator->flags & REAP_NET_FLAG_DOMAIN) {
         return nextUnix(iterator, result);
     }
 
@@ -239,19 +237,13 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
         }
     }
 
-    ret = (iterator->ipv6 ? parseNet6Line : parseNet4Line)(line, result);
-#ifdef REAP_USE_ERROR_BUFFER
+    ret = (iterator->flags & REAP_NET_FLAG_IPV6 ? parseNet6Line : parseNet4Line)(line, result);
     if (ret == REAP_RET_OTHER) {
-        unsigned int len;
+#ifdef REAP_USE_ERROR_BUFFER
         char buffer[20];
 
-        len = strnlen(line, sizeof(line));
-        if (len > 0 && line[len - 1] == '\n') {
-            line[len - 1] = '\0';
-        }
-
-        EMIT_ERROR("Malformed line in %s: %s", formFile(iterator, buffer, sizeof(buffer)), line);
-    }
+        EMIT_ERROR("Malformed line in %s: %s", formFile(iterator, buffer, sizeof(buffer)), stripLine(line));
 #endif
+    }
     return ret;
 }
