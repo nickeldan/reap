@@ -71,7 +71,7 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
             return REAP_RET_DONE;
         }
     }
-    num_matches = sscanf(line, "%lx-%lx %c%c%c%*c %x %u:%u %lu %s", &result->start, &result->end, &r, &w, &x,
+    num_matches = sscanf(line, "%lx-%lx %c%c%c%*c %x %x:%x %lu %s", &result->start, &result->end, &r, &w, &x,
                          &result->offset, &major, &minor, &inode, result->name);
     if (num_matches < 9) {
 #ifdef REAP_USE_ERROR_BUFFER
