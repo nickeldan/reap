@@ -3,8 +3,8 @@ REAP
 ====
 
 :Author: Daniel Walker
-:Version: 0.7.1
-:Date: 2022-07-18
+:Version: 0.8.0
+:Date: 2022-07-20
 
 *"We will encourage you to develop the three great virtues of a programmer: laziness, impatience, and hubris.”* - Larry Wall
 
@@ -191,6 +191,38 @@ The iterator must be closed when it is no longer needed.
 .. code-block:: c
 
     void reapMapIteratorClose(reapMapIterator *iterator);
+
+Thread iteration
+----------------
+
+A **reapThreadIterator** can be used to iterate over a process' threads.
+
+First, the iterator has to be intialized.
+
+.. code-block:: c
+
+    int ret;
+    reapThreadIterator iterator;
+
+    ret = reapThreadIteratorInit(some_pid, &iterator);
+    if ( ret != REAP_RET_OK ) {
+        // handle the error
+    }
+
+After initialization, we can repeatedly acquire thread PIDs with
+
+.. code-block:: c
+
+    int reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread);
+
+**reapThreadIteratorNext** returns **REAP_RET_OK** when yielding a result, **REAP_RET_DONE** when the
+iterator has been exhausted, and an error code otherwise.
+
+The iterator must be closed when it is no longer needed.
+
+.. code-block:: c
+
+    void reapThreadIteratorClose(reapThreadIterator *iterator);
 
 Socket iteration
 ----------------

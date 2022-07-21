@@ -7,3 +7,4 @@ test_pid_list
 test_open_fds
 test_get_maps
 test_find_net
+test_list_threads

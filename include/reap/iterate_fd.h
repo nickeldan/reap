@@ -60,7 +60,8 @@ reapFdIteratorClose(reapFdIterator *iterator);
  * @param iterator      A pointer to the iterator.
  * @param[out] result   The result to be populated.
  *
- * @return              REAP_RET_OK if successful and an error code otherwise.
+ * @return              REAP_RET_OK if a result was found, REAP_RET_DONE if the iteration is finished, and an
+ * error code otherwise.
  */
 int
 reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result);
@@ -73,8 +74,7 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result);
  * @param[out] dest A buffer where the file name will be placed.
  * @param size      The size of the buffer.
  *
- * @return          REAP_RET_OK if a result was found, REAP_RET_DONE if the iteration is finished, and an
- * error code otherwise.
+ * @return          REAP_RET_OK if successful and an error code otherwise.
  */
 int
 reapReadFd(pid_t pid, int fd, char *dest, size_t size);

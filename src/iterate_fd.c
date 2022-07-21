@@ -1,4 +1,3 @@
-#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,7 +11,7 @@
 int
 reapFdIteratorInit(pid_t pid, reapFdIterator *iterator)
 {
-    char buffer[100];
+    char buffer[40];
 
     if (pid <= 0 || !iterator) {
         if (pid <= 0) {
@@ -30,7 +29,7 @@ reapFdIteratorInit(pid_t pid, reapFdIterator *iterator)
     if (!iterator->dir) {
         int local_errno = errno;
 
-        EMIT_ERROR("opendir failed: %s", strerror(local_errno));
+        EMIT_ERROR("opendir failed on %s: %s", buffer, strerror(local_errno));
         return translateErrno(local_errno);
     }
 
@@ -51,7 +50,7 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
 {
     long value;
     char *endptr;
-    char buffer[100];
+    char buffer[40];
     struct dirent *entry;
     struct stat fs;
 
@@ -85,12 +84,10 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
     } while (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0);
 
     value = strtol(entry->d_name, &endptr, 10);
-    if (*endptr != '\0' || value < 0 || value > INT_MAX) {
+    if (*endptr != '\0' || value < 0 || (result->fd = value) != value) {
         EMIT_ERROR("Invalid file in fd directory: %s", entry->d_name);
         return REAP_RET_OTHER;
     }
-
-    result->fd = value;
 
     snprintf(buffer, sizeof(buffer), "/proc/%li/fd/%i", (long)iterator->pid, result->fd);
     if (betterReadlink(buffer, result->file, sizeof(result->file)) == -1) {
@@ -116,7 +113,7 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
 int
 reapReadFd(pid_t pid, int fd, char *dest, size_t size)
 {
-    char buffer[100];
+    char buffer[40];
 
     if (pid <= 0 || fd < 0 || !dest) {
         if (pid <= 0) {

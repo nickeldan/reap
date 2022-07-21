@@ -15,7 +15,7 @@ main(int argc, char **argv)
     reapMapIterator iterator;
     reapMapResult result;
 
-    if (argc == 1) {
+    if (argc < 2) {
         fprintf(stderr, "Missing argument\n");
         return REAP_RET_BAD_USAGE;
     }

@@ -1,3 +1,7 @@
+0.8.0:
+    - Added the reapThreadIterator logic.
+    - Added the "tgid" field to reapProcInfo.
+
 0.7.1:
     - Fixed the parsing of the device number in the map iteration logic.
 
