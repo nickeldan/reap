@@ -33,7 +33,8 @@ int
 reapGetProcInfo(pid_t pid, reapProcInfo *info)
 {
     int ret = REAP_RET_OK;
-    bool found_uid = false, found_gid = false, found_parent = false;
+    unsigned int num_found = 0;
+    bool found_uid = false, found_gid = false, found_parent = false, found_tgid = false;
     char prefix[20], buffer[100], line[256];
     FILE *file;
 
@@ -75,34 +76,37 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info)
     }
 
     while (fgets(line, sizeof(line), file)) {
-        unsigned long id, eid, ppid;
+        unsigned long id, eid, ppid, tgid;
 
         if (!found_uid && sscanf(line, "Uid: %lu %lu %*u %*u\n", &id, &eid) == 2) {
             info->uid = id;
             info->euid = eid;
-            if (found_gid && found_parent) {
-                goto done;
-            }
             found_uid = true;
         }
         else if (!found_gid && sscanf(line, "Gid: %lu %lu %*u %*u\n", &id, &eid) == 2) {
             info->gid = id;
             info->egid = eid;
-            if (found_uid && found_parent) {
-                goto done;
-            }
             found_gid = true;
         }
         else if (!found_parent && sscanf(line, "PPid: %lu\n", &ppid) == 1) {
             info->ppid = ppid;
-            if (found_uid && found_gid) {
-                goto done;
-            }
             found_parent = true;
+        }
+        else if (!found_tgid && sscanf(line, "Tgid: %lu\n", &tgid) == 1) {
+            info->tgid = tgid;
+            found_tgid = true;
+        }
+        else {
+            continue;
+        }
+
+        if (++num_found == 4) {
+            goto done;
         }
     }
 
-    EMIT_ERROR("No %s line found in %s", found_gid ? found_uid ? "PPid" : "Uid" : "Gid", buffer);
+    EMIT_ERROR("No %s line found in %s",
+               found_gid ? found_uid ? found_tgid ? "PPid" : "Tgid" : "Uid" : "Gid", buffer);
     ret = REAP_RET_OTHER;
 
 done:

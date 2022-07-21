@@ -36,6 +36,7 @@ where **reapProcInfo** is defined as
     typedef struct reapProcInfo {
         pid_t pid;  // Process ID.
         pid_t ppid; // Parent process ID.
+        pid_t tgid; // Task group ID.
         uid_t uid;  // User ID.
         uid_t euid; // Effective user ID.
         gid_t gid;  // Group ID.

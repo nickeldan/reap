@@ -60,6 +60,7 @@ reapGetError(void);
 typedef struct reapProcInfo {
     pid_t pid;                      /**< Process ID.*/
     pid_t ppid;                     /**< Parent process ID.*/
+    pid_t tgid;                     /**< Task group ID.*/
     uid_t uid;                      /**< ID of the user running the process.*/
     uid_t euid;                     /**< Effective user ID running the process.*/
     gid_t gid;                      /**< Group ID of the user running the process.*/
