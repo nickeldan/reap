@@ -1,3 +1,7 @@
+0.8.1:
+    - Fixed a bug in reapFdIteratorNext that caused a spurious error when a descriptor was closed during the
+      iteration.
+
 0.8.0:
     - Added the reapThreadIterator logic.
     - Added the "tgid" field to reapProcInfo.

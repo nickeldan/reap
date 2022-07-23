@@ -48,8 +48,6 @@ reapFdIteratorClose(reapFdIterator *iterator)
 int
 reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
 {
-    long value;
-    char *endptr;
     char buffer[40];
     struct dirent *entry;
     struct stat fs;
@@ -68,41 +66,34 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
     }
 
     do {
-        errno = 0;
-        entry = readdir(iterator->dir);
-        if (!entry) {
-            int local_errno = errno;
+        long value;
+        char *endptr;
 
-            if (local_errno == 0) {
-                return REAP_RET_DONE;
+        do {
+            errno = 0;
+            entry = readdir(iterator->dir);
+            if (!entry) {
+                int local_errno = errno;
+
+                if (local_errno == 0) {
+                    return REAP_RET_DONE;
+                }
+                else {
+                    EMIT_ERROR("readdir failed: %s", strerror(local_errno));
+                    return translateErrno(local_errno);
+                }
             }
-            else {
-                EMIT_ERROR("readdir failed: %s", strerror(local_errno));
-                return translateErrno(local_errno);
-            }
+        } while (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0);
+
+        value = strtol(entry->d_name, &endptr, 10);
+        if (*endptr != '\0' || value < 0 || (result->fd = value) != value) {
+            EMIT_ERROR("Invalid file in fd directory: %s", entry->d_name);
+            return REAP_RET_OTHER;
         }
-    } while (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0);
 
-    value = strtol(entry->d_name, &endptr, 10);
-    if (*endptr != '\0' || value < 0 || (result->fd = value) != value) {
-        EMIT_ERROR("Invalid file in fd directory: %s", entry->d_name);
-        return REAP_RET_OTHER;
-    }
+        snprintf(buffer, sizeof(buffer), "/proc/%li/fd/%i", (long)iterator->pid, result->fd);
+    } while (betterReadlink(buffer, result->file, sizeof(result->file)) == -1 || stat(buffer, &fs) != 0);
 
-    snprintf(buffer, sizeof(buffer), "/proc/%li/fd/%i", (long)iterator->pid, result->fd);
-    if (betterReadlink(buffer, result->file, sizeof(result->file)) == -1) {
-        int local_errno = errno;
-
-        EMIT_ERROR("readlink failed on %s: %s", buffer, strerror(local_errno));
-        return translateErrno(local_errno);
-    }
-
-    if (stat(buffer, &fs) != 0) {
-        int local_errno = errno;
-
-        EMIT_ERROR("stat failed on %s: %s", buffer, strerror(local_errno));
-        return translateErrno(local_errno);
-    }
     result->device = fs.st_dev;
     result->inode = fs.st_ino;
     result->mode = fs.st_mode;
