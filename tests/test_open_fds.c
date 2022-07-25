@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <reap/iterate_fd.h>
-
 #include "common.h"
 
 int

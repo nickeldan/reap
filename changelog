@@ -1,3 +1,6 @@
+0.8.2:
+    - Added a missing include to reap.h.
+
 0.8.1:
     - Fixed a bug in reapFdIteratorNext that caused a spurious error when a descriptor was closed during the
       iteration.

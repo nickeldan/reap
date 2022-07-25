@@ -3,8 +3,8 @@ REAP
 ====
 
 :Author: Daniel Walker
-:Version: 0.8.1
-:Date: 2022-07-22
+:Version: 0.8.2
+:Date: 2022-07-25
 
 *"We will encourage you to develop the three great virtues of a programmer: laziness, impatience, and hubris.”* - Larry Wall
 

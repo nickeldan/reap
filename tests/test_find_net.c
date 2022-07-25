@@ -2,8 +2,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include <reap/iterate_net.h>
-
 #include "common.h"
 
 static int

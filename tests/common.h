@@ -1,7 +1,7 @@
 #ifndef REAP_TESTS_COMMON_H
 #define REAP_TESTS_COMMON_H
 
-#include <reap/definitions.h>
+#include <reap/reap.h>
 
 #ifdef REAP_USE_ERROR_BUFFER
 #define ERROR(ret) reapGetError()
