@@ -1,3 +1,7 @@
+0.8.3:
+    - Fixed a bug that was causing reapThreadIteratorNext to mistakenly fail because errno wasn't set before
+      calling readdir.
+
 0.8.2:
     - Added a missing include to reap.h.
 

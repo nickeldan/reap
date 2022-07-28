@@ -70,6 +70,7 @@ reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread)
     }
 
     do {
+        errno = 0;
         entry = readdir(iterator->dir);
         if (!entry) {
             int local_errno = errno;
