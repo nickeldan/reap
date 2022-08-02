@@ -26,7 +26,7 @@ include $(REAP_DEPS_FILE)
 endif
 
 $(REAP_SHARED_LIBRARY): $(REAP_OBJECT_FILES)
-	$(CC) -shared -o $@ $^
+	$(CC) $(LDFLAGS) -shared -o $@ $^
 
 $(REAP_STATIC_LIBRARY): $(REAP_OBJECT_FILES)
 	$(AR) rcs $@ $^
