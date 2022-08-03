@@ -15,7 +15,7 @@ all: _all
 REAP_DIR := .
 include make.mk
 
-.PHONY: all _all tests install uninstall clean $(CLEAN_TARGETS)
+.PHONY: all _all tests format install uninstall clean $(CLEAN_TARGETS)
 
 _all: $(REAP_SHARED_LIBRARY) $(REAP_STATIC_LIBRARY) tests
 
@@ -38,6 +38,9 @@ tests: $(TESTS)
 
 test_%: tests/test_%.c tests/common.h $(REAP_STATIC_LIBRARY) $(REAP_HEADER_FILES)
 	$(CC) $(CFLAGS) -I$(REAP_INCLUDE_DIR) -o $@ $(filter-out %.h,$^)
+
+format:
+	find . -name '*.[hc]' -print0 | xargs -0 clang-format -i
 
 clean: $(CLEAN_TARGETS)
 	@rm -f $(TESTS) $(DEPS_FILES)
