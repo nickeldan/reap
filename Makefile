@@ -40,7 +40,7 @@ test_%: tests/test_%.c tests/common.h $(REAP_STATIC_LIBRARY) $(REAP_HEADER_FILES
 	$(CC) $(CFLAGS) -I$(REAP_INCLUDE_DIR) -o $@ $(filter-out %.h,$^)
 
 format:
-	find . -name '*.[hc]' -print0 | xargs -0 clang-format -i
+	find . -name '*.[hc]' -print0 | xargs -0 -n 1 clang-format -i
 
 clean: $(CLEAN_TARGETS)
 	@rm -f $(TESTS) $(DEPS_FILES)
