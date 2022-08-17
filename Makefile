@@ -24,7 +24,7 @@ install: /usr/local/lib/$(notdir $(REAP_SHARED_LIBRARY)) $(foreach file,$(REAP_H
 /usr/local/lib/$(notdir $(REAP_SHARED_LIBRARY)): $(REAP_SHARED_LIBRARY)
 	cp $< $@
 
-/usr/local/include/reap/%.h: $(REAP_INCLUDE_DIR)/reap/%.h /usr/local/include/reap
+/usr/local/include/reap/%.h: include/reap/%.h /usr/local/include/reap
 	cp $< $@
 
 /usr/local/include/reap:
@@ -37,7 +37,7 @@ uninstall:
 tests: $(TESTS)
 
 test_%: tests/test_%.c tests/common.h $(REAP_STATIC_LIBRARY) $(REAP_HEADER_FILES)
-	$(CC) $(CFLAGS) -I$(REAP_INCLUDE_DIR) -o $@ $(filter-out %.h,$^)
+	$(CC) $(CFLAGS) $(REAP_INCLUDE_FLAGS) -o $@ $(filter-out %.h,$^)
 
 format:
 	find . -name '*.[hc]' -print0 | xargs -0 -n 1 clang-format -i

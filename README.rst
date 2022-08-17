@@ -3,8 +3,8 @@ REAP
 ====
 
 :Author: Daniel Walker
-:Version: 0.8.3
-:Date: 2022-07-28
+:Version: 0.8.4
+:Date: 2022-08-16
 
 *"We will encourage you to develop the three great virtues of a programmer: laziness, impatience, and hubris.”* - Larry Wall
 
@@ -306,6 +306,8 @@ optimization and build the libraries with debugging symbols.
 You can also include REAP in a larger project by including make.mk.  Before doing so, however, the
 **REAP_DIR** variable must be set to the location of the REAP directory.  You can also tell make where to
 place the shared and static libraries by defining the **REAP_LIB_DIR** variable (defaults to **REAP_DIR**).
+Similarly, you can define the **REAP_OBJ_DIR** variable which tells make where to place the object files
+(defaults to **REAP_DIR**/src).
 
 make.mk adds a target to the **CLEAN_TARGETS** variable.  This is so that implementing
 

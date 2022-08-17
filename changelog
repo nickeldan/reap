@@ -1,3 +1,6 @@
+0.8.4:
+    - Added LDFLAGS and REAP_OBJ_DIR to make.mk.
+
 0.8.3:
     - Fixed a bug that was causing reapThreadIteratorNext to mistakenly fail because errno wasn't set before
       calling readdir.
