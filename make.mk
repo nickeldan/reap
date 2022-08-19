@@ -12,9 +12,9 @@ REAP_INCLUDE_FLAGS := -I$(REAP_DIR)/include
 REAP_DEPS_FILE := $(REAP_DIR)/deps.mk
 DEPS_FILES += $(REAP_DEPS_FILE)
 
-CLEAN_TARGETS += reap_clean
+BUILD_DEPS ?= $(if $(MAKECMDGOALS),$(subst clean,,$(MAKECMDGOALS)),yes)
 
-ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(BUILD_DEPS),)
 
 $(REAP_DEPS_FILE): $(REAP_SOURCE_FILES) $(REAP_HEADER_FILES)
 	rm -f $@
@@ -34,3 +34,5 @@ $(REAP_STATIC_LIBRARY): $(REAP_OBJECT_FILES)
 
 reap_clean:
 	@rm -f $(REAP_SHARED_LIBRARY) $(REAP_STATIC_LIBRARY) $(REAP_OBJECT_FILES)
+
+CLEAN_TARGETS += reap_clean
