@@ -9,7 +9,7 @@ REAP_OBJECT_FILES := $(patsubst $(REAP_DIR)/src/%.c,$(REAP_OBJ_DIR)/%.o,$(REAP_S
 REAP_HEADER_FILES := $(wildcard $(REAP_DIR)/include/reap/*.h)
 REAP_INCLUDE_FLAGS := -I$(REAP_DIR)/include
 
-REAP_DEPS_FILE := $(REAP_DIR)/deps.mk
+REAP_DEPS_FILE := $(REAP_OBJ_DIR)/deps.mk
 DEPS_FILES += $(REAP_DEPS_FILE)
 
 BUILD_DEPS ?= $(if $(MAKECMDGOALS),$(subst clean,,$(MAKECMDGOALS)),yes)
