@@ -175,8 +175,8 @@ where **reapMapResult** is defined as
         unsigned long end; // The end address of the memory section.
         unsigned int offset; // The offset of the memory section within the referent file (if any).
         int permissions; // The permissions of the memory section.
-        dev_t device; // The device number of the referent file (if any).
         ino_t inode; // The inode of the referent file (if any).
+        dev_t device; // The device number of the referent file (if any).
         char name[REAP_SHORT_PATH_SIZE]; // The name of the memory section (if any).
     } reapMapResult;
 

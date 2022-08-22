@@ -12,6 +12,13 @@ TESTS := $(patsubst tests/%.c,%,$(wildcard tests/*.c))
 
 all: _all
 
+BUILD_DEPS :=
+ifeq ($(MAKECMDGOALS),clean)
+else ifeq ($(MAKECMDGOALS),format)
+else
+    BUILD_DEPS := yes
+endif
+
 REAP_DIR := .
 include make.mk
 

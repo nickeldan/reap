@@ -7,7 +7,11 @@
 
 #include <reap/definitions.h>
 
+#ifdef __GNUC__
 #define HIDDEN_SYMBOL __attribute__((visibility("hidden")))
+#else
+#define HIDDEN_SYMBOL
+#endif
 
 #ifndef NO_OP
 #define NO_OP while (0)
@@ -20,7 +24,11 @@
 #ifdef REAP_USE_ERROR_BUFFER
 
 void HIDDEN_SYMBOL
-emitError(const char *format, ...);
+emitError(const char *format, ...)
+#ifdef __GNUC__
+    __attribute__((format(printf, 1, 2)))
+#endif
+    ;
 #define EMIT_ERROR(...) emitError(__VA_ARGS__)
 
 #else

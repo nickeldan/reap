@@ -42,7 +42,11 @@ enum reapRetValue {
  * @return      A string describing the error.
  */
 const char *
-reapErrorString(int value) __attribute__((pure));
+reapErrorString(int value)
+#ifdef __GNUC__
+    __attribute__((pure))
+#endif
+    ;
 
 #ifdef REAP_USE_ERROR_BUFFER
 /**

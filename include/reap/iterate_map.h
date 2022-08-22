@@ -31,8 +31,8 @@ typedef struct reapMapResult {
     unsigned long end;               /**< The end of the memory section.*/
     unsigned int offset;             /**< The offset of the memory section in the referent file.*/
     int permissions;                 /**< The permissions of the memory section.*/
-    dev_t device;                    /**< The device number of the referent file.*/
     ino_t inode;                     /**< The inode of the referent file.*/
+    dev_t device;                    /**< The device number of the referent file.*/
     char name[REAP_SHORT_PATH_SIZE]; /**< The name of the referent file.*/
 } reapMapResult;
 
@@ -42,7 +42,7 @@ typedef struct reapMapResult {
  * @param pid       The PID.
  * @param iterator  A pointer to the iterator.
  *
- * @return          REAP_RET_Ok if successful and an error code otherwise.
+ * @return          REAP_RET_OK if successful and an error code otherwise.
  */
 int
 reapMapIteratorInit(pid_t pid, reapMapIterator *iterator);
