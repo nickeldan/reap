@@ -26,9 +26,9 @@ typedef struct reapProcIterator {
 /**
  * @brief Initializes an iterator.
  *
- * @param iterator  A pointer to the iterator.
+ * @param[out] iterator     A pointer to the iterator.
  *
- * @return          REAP_RET_OK if successful and an error code otherwise.
+ * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
 reapProcIteratorInit(reapProcIterator *iterator);

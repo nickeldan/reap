@@ -3,8 +3,8 @@ REAP
 ====
 
 :Author: Daniel Walker
-:Version: 0.8.4
-:Date: 2022-08-16
+:Version: 0.9.0
+:Date: 2022-08-21
 
 *"We will encourage you to develop the three great virtues of a programmer: laziness, impatience, and hubris.”* - Larry Wall
 
@@ -41,10 +41,10 @@ where **reapProcInfo** is defined as
         uid_t euid; // Effective user ID.
         gid_t gid;  // Group ID.
         gid_t egid; // Effective group ID.
-        char exe[REAP_SHORT_PATH_SIZE]; // Path of the file being run.
+        char exe[REAP_PATH_SIZE]; // Path of the file being run.
     } reapProcInfo;
 
-where **REAP_SHORT_PATH_SIZE** is a preprocessor variable defined in reap/config.h.
+where **REAP_PATH_SIZE** is a preprocessor variable defined in reap/config.h.
 
 **reapGetProcInfo** returns **REAP_RET_OK** if successful and an error code otherwise (defined in
 reap/definitions.h).
@@ -58,9 +58,9 @@ An error code, such as one returned from **reapProcGetInfo**, can be converted i
 
     const char *reapErrorString(int value);
 
-In addition, if the **REAP_USE_ERROR_BUFFER** preprocessor variable is defined (see reap/config.h), a buffer
-will be kept in thread-local storage which will be populated with a more descriptive message whenever an
-error occurs.  This buffer can be accessed with
+In addition, if the **REAP_NO_ERROR_BUFFER** preprocessor variable is not defined, a buffer will be kept in
+thread-local storage which will be populated with a more descriptive message whenever an error occurs.  This
+buffer can be accessed with
 
 .. code-block:: c
 
@@ -131,7 +131,7 @@ where **reapFdResult** is defined as
         dev_t device;
         ino_t inode;
         mode_t mode;
-        char file[REAP_SHORT_PATH_SIZE];
+        char file[REAP_PATH_SIZE];
     } reapFdResult;
 
 **reapFdIteratorNext** returns **REAP_RET_OK** when yielding a result, **REAP_RET_DONE** when the iterator
@@ -177,7 +177,7 @@ where **reapMapResult** is defined as
         int permissions; // The permissions of the memory section.
         ino_t inode; // The inode of the referent file (if any).
         dev_t device; // The device number of the referent file (if any).
-        char name[REAP_SHORT_PATH_SIZE]; // The name of the memory section (if any).
+        char name[REAP_PATH_SIZE]; // The name of the memory section (if any).
     } reapMapResult;
 
 The permissions are some bitwise-OR combination of **PROT_READ**, **PROT_WRITE**, and **PROT_EXEC** from

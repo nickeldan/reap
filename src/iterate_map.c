@@ -74,7 +74,7 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
     num_matches = sscanf(line, "%lx-%lx %c%c%c%*c %x %x:%x %lu %s", &result->start, &result->end, &r, &w, &x,
                          &result->offset, &major, &minor, &inode, result->name);
     if (num_matches < 9) {
-#ifdef REAP_USE_ERROR_BUFFER
+#ifndef REAP_NO_ERROR_BUFFER
         unsigned int line_length;
 
         line_length = strnlen(line, sizeof(line));

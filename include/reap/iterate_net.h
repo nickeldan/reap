@@ -79,10 +79,10 @@ typedef struct reapNetResult {
 /**
  * @brief Initializes an iterator.
  *
- * @param iterator  A pointer to the iterator.
- * @param flags     Flags which determine the IP and transport layers.
+ * @param[out] iterator     A pointer to the iterator.
+ * @param flags             Flags which determine the IP and transport layers.
  *
- * @return          REAP_RET_OK if successful and an error code otherwise.
+ * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
 reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags);

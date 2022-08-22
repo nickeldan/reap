@@ -21,7 +21,7 @@
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof((x)[0]))
 #endif
 
-#ifdef REAP_USE_ERROR_BUFFER
+#ifndef REAP_NO_ERROR_BUFFER
 
 void HIDDEN_SYMBOL
 emitError(const char *format, ...)

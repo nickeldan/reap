@@ -17,7 +17,7 @@
 /**
  * @brief REAP's version.
  */
-#define REAP_VERSION "0.8.4"
+#define REAP_VERSION "0.9.0"
 
 /**
  * @brief Return values.
@@ -48,7 +48,7 @@ reapErrorString(int value)
 #endif
     ;
 
-#ifdef REAP_USE_ERROR_BUFFER
+#ifndef REAP_NO_ERROR_BUFFER
 /**
  * @brief   Acquires the thread-local buffer holding the last error message.
  *
@@ -62,14 +62,14 @@ reapGetError(void);
  * @brief Information concerning a running process.
  */
 typedef struct reapProcInfo {
-    pid_t pid;                      /**< Process ID.*/
-    pid_t ppid;                     /**< Parent process ID.*/
-    pid_t tgid;                     /**< Task group ID.*/
-    uid_t uid;                      /**< ID of the user running the process.*/
-    uid_t euid;                     /**< Effective user ID running the process.*/
-    gid_t gid;                      /**< Group ID of the user running the process.*/
-    gid_t egid;                     /**< Effective group ID running the process.*/
-    char exe[REAP_SHORT_PATH_SIZE]; /**< Path of the file being run.*/
+    pid_t pid;                /**< Process ID.*/
+    pid_t ppid;               /**< Parent process ID.*/
+    pid_t tgid;               /**< Task group ID.*/
+    uid_t uid;                /**< ID of the user running the process.*/
+    uid_t euid;               /**< Effective user ID running the process.*/
+    gid_t gid;                /**< Group ID of the user running the process.*/
+    gid_t egid;               /**< Effective group ID running the process.*/
+    char exe[REAP_PATH_SIZE]; /**< Path of the file being run.*/
 } reapProcInfo;
 
 /**

@@ -26,7 +26,7 @@ formFile(const reapNetIterator *iterator, char *dst, unsigned int size)
     return dst;
 }
 
-#ifdef REAP_USE_ERROR_BUFFER
+#ifndef REAP_NO_ERROR_BUFFER
 
 static char *
 stripLine(char *line)
@@ -225,7 +225,7 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
 
     if (!fgets(line, sizeof(line), iterator->file)) {
         if (ferror(iterator->file)) {
-#ifdef REAP_USE_ERROR_BUFFER
+#ifndef REAP_NO_ERROR_BUFFER
             char buffer[20];
 
             EMIT_ERROR("Failed to read from %s", formFile(iterator, buffer, sizeof(buffer)));
@@ -239,7 +239,7 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
 
     ret = (iterator->flags & REAP_NET_FLAG_IPV6 ? parseNet6Line : parseNet4Line)(line, result);
     if (ret == REAP_RET_OTHER) {
-#ifdef REAP_USE_ERROR_BUFFER
+#ifndef REAP_NO_ERROR_BUFFER
         char buffer[20];
 
         EMIT_ERROR("Malformed line in %s: %s", formFile(iterator, buffer, sizeof(buffer)), stripLine(line));

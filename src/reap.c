@@ -7,7 +7,7 @@
 
 #include "internal.h"
 
-#ifdef REAP_USE_ERROR_BUFFER
+#ifndef REAP_NO_ERROR_BUFFER
 
 static _Thread_local char errorBuffer[256] = {0};
 
@@ -27,7 +27,7 @@ reapGetError(void)
     return errorBuffer;
 }
 
-#endif  // REAP_USE_ERROR_BUFFER
+#endif  // REAP_NO_ERROR_BUFFER
 
 int
 reapGetProcInfo(pid_t pid, reapProcInfo *info)

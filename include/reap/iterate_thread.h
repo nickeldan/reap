@@ -1,4 +1,5 @@
-/** * @file iterate_thread.h * @author Daniel Walker
+/**
+ * @file iterate_thread.h * @author Daniel Walker
  * @brief Exposes thread iteration.
  *
  * @copyright Copyright (c) 2022
@@ -25,8 +26,8 @@ typedef struct reapThreadIterator {
 /**
  * @brief Initializes an iterator.
  *
- * @param pid       The PID whoses threads the iterator will return.
- * @param iterator  A pointer to the iterator.
+ * @param pid               The PID whoses threads the iterator will return.
+ * @param[out] iterator     A pointer to the iterator.
  *
  * @return          REAP_RET_OK if successful and an error code otherwise.
  */

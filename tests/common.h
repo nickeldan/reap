@@ -3,10 +3,10 @@
 
 #include <reap/reap.h>
 
-#ifdef REAP_USE_ERROR_BUFFER
-#define ERROR(ret) reapGetError()
-#else
+#ifdef REAP_NO_ERROR_BUFFER
 #define ERROR(ret) reapErrorString(ret)
+#else
+#define ERROR(ret) reapGetError()
 #endif
 
 #endif  // REAP_TESTS_COMMON_H

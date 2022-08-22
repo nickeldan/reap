@@ -87,7 +87,7 @@ reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread)
 
     value = strtol(entry->d_name, &endptr, 10);
     if (*endptr != '\0' || value <= 0 || (*thread = value) != value) {
-#ifdef REAP_USE_ERROR_BUFFER
+#ifndef REAP_NO_ERROR_BUFFER
         char buffer[30];
 
         EMIT_ERROR("Invalid file in %s: %s", formDirectory(iterator->pid, buffer, sizeof(buffer)),
