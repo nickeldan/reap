@@ -30,7 +30,7 @@ reapFdIteratorInit(pid_t pid, reapFdIterator *iterator)
         int local_errno = errno;
 
         EMIT_ERROR("opendir failed on %s: %s", buffer, strerror(local_errno));
-        return translateErrno(local_errno);
+        return -1 * local_errno;
     }
 
     return REAP_RET_OK;
@@ -80,7 +80,7 @@ reapFdIteratorNext(const reapFdIterator *iterator, reapFdResult *result)
                 }
                 else {
                     EMIT_ERROR("readdir failed: %s", strerror(local_errno));
-                    return translateErrno(local_errno);
+                    return -1 * local_errno;
                 }
             }
         } while (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0);
@@ -124,7 +124,7 @@ reapReadFd(pid_t pid, int fd, char *dest, size_t size)
         int local_errno = errno;
 
         EMIT_ERROR("readlink failed on %s: %s", buffer, strerror(local_errno));
-        return translateErrno(local_errno);
+        return -1 * local_errno;
     }
 
     return REAP_RET_OK;

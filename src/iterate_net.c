@@ -177,7 +177,7 @@ reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags)
         int local_errno = errno;
 
         EMIT_ERROR("Failed to open %s: %s", buffer, strerror(local_errno));
-        return translateErrno(local_errno);
+        return -1 * local_errno;
     }
 
     if (!fgets(line, sizeof(line), iterator->file)) {

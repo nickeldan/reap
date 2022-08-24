@@ -25,7 +25,7 @@ reapMapIteratorInit(pid_t pid, reapMapIterator *iterator)
         int local_errno = errno;
 
         EMIT_ERROR("fopen failed to open %s: %s", buffer, strerror(local_errno));
-        return translateErrno(local_errno);
+        return -1 * local_errno;
     }
 
     return REAP_RET_OK;

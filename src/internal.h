@@ -7,12 +7,6 @@
 
 #include <reap/definitions.h>
 
-#ifdef __GNUC__
-#define HIDDEN_SYMBOL __attribute__((visibility("hidden")))
-#else
-#define HIDDEN_SYMBOL
-#endif
-
 #ifndef NO_OP
 #define NO_OP while (0)
 #endif
@@ -23,10 +17,10 @@
 
 #ifndef REAP_NO_ERROR_BUFFER
 
-void HIDDEN_SYMBOL
+void
 emitError(const char *format, ...)
 #ifdef __GNUC__
-    __attribute__((format(printf, 1, 2)))
+    __attribute__((format(printf, 1, 2))) __attribute__((visibility("hidden")))
 #endif
     ;
 #define EMIT_ERROR(...) emitError(__VA_ARGS__)
@@ -37,10 +31,11 @@ emitError(const char *format, ...)
 
 #endif
 
-int HIDDEN_SYMBOL
-translateErrno(int errno_value);
-
-int HIDDEN_SYMBOL
-betterReadlink(const char *pathname, char *buf, size_t bufsiz);
+int
+betterReadlink(const char *pathname, char *buf, size_t bufsiz)
+#ifdef __GNUC__
+    __attribute__((visibility("hidden")))
+#endif
+    ;
 
 #endif  // REAP_INTERNAL_H

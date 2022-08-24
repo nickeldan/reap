@@ -17,7 +17,7 @@ reapProcIteratorInit(reapProcIterator *iterator)
         int local_errno = errno;
 
         EMIT_ERROR("opendir failed on /proc: %s", strerror(local_errno));
-        return translateErrno(local_errno);
+        return -1 * local_errno;
     }
 
     return REAP_RET_OK;
@@ -64,7 +64,7 @@ reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info)
             }
             else {
                 EMIT_ERROR("readdir failed: %s", strerror(local_errno));
-                return translateErrno(local_errno);
+                return -1 * local_errno;
             }
         }
 

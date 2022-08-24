@@ -1,6 +1,3 @@
-CC ?= gcc
-debug ?= no
-
 CFLAGS := -std=gnu11 -fdiagnostics-color -Wall -Wextra
 ifeq ($(debug),yes)
     CFLAGS += -O0 -g -DDEBUG
@@ -15,6 +12,7 @@ all: _all
 BUILD_DEPS :=
 ifeq ($(MAKECMDGOALS),clean)
 else ifeq ($(MAKECMDGOALS),format)
+else ifeq ($(MAKECMDGOALS),uninstall)
 else
     BUILD_DEPS := yes
 endif

@@ -65,7 +65,7 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info)
         }
 
         EMIT_ERROR("readlink failed on %s: %s", buffer, strerror(local_errno));
-        return translateErrno(local_errno);
+        return -1 * local_errno;
     }
 
     snprintf(buffer, sizeof(buffer), "%s/status", prefix);

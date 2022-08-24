@@ -23,15 +23,12 @@
  * @brief Return values.
  */
 enum reapRetValue {
-    REAP_RET_OK,             /**< The function was successful.*/
-    REAP_RET_DONE,           /**< The iteration is finished.*/
-    REAP_RET_BAD_USAGE,      /**< A funciton was called with invalid arguments.*/
-    REAP_RET_OUT_OF_MEMORY,  /**< A memory allocation failed.*/
-    REAP_RET_NO_PERMISSION,  /**< No permission to access a requested resource.*/
-    REAP_RET_NOT_FOUND,      /**< A requested resource was not found.*/
-    REAP_RET_TOO_MANY_LINKS, /**< Too many symbolic links encountered.*/
-    REAP_RET_FILE_READ,      /**< Failed to read from a file.*/
-    REAP_RET_OTHER,          /**< Catch-all error.*/
+    REAP_RET_OK,        /**< The function was successful.*/
+    REAP_RET_DONE,      /**< The iteration is finished.*/
+    REAP_RET_BAD_USAGE, /**< A funciton was called with invalid arguments.*/
+    REAP_RET_NOT_FOUND, /**< A requested resource was not found.*/
+    REAP_RET_FILE_READ, /**< Failed to read from a file.*/
+    REAP_RET_OTHER,     /**< Catch-all error.*/
 };
 
 /**
@@ -42,11 +39,7 @@ enum reapRetValue {
  * @return      A string describing the error.
  */
 const char *
-reapErrorString(int value)
-#ifdef __GNUC__
-    __attribute__((pure))
-#endif
-    ;
+reapErrorString(int value);
 
 #ifndef REAP_NO_ERROR_BUFFER
 /**

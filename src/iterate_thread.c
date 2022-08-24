@@ -34,7 +34,7 @@ reapThreadIteratorInit(pid_t pid, reapThreadIterator *iterator)
         int local_errno = errno;
 
         EMIT_ERROR("opendir failed on %s: %s", buffer, strerror(local_errno));
-        return translateErrno(local_errno);
+        return -1 * local_errno;
     }
 
     return REAP_RET_OK;
@@ -80,7 +80,7 @@ reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread)
             }
             else {
                 EMIT_ERROR("readdir failed: %s", strerror(local_errno));
-                return translateErrno(local_errno);
+                return -1 * local_errno;
             }
         }
     } while (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0);
