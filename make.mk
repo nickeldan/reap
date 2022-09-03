@@ -1,3 +1,6 @@
+ifndef REAP_MK
+REAP_MK :=
+
 REAP_LIB_DIR ?= $(REAP_DIR)
 REAP_OBJ_DIR ?= $(REAP_DIR)/src
 
@@ -39,3 +42,5 @@ reap_clean:
 	@rm -f $(REAP_SHARED_LIBRARY) $(REAP_STATIC_LIBRARY) $(REAP_OBJECT_FILES)
 
 CLEAN_TARGETS += reap_clean
+
+endif
