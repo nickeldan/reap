@@ -10,36 +10,30 @@
 #ifndef REAP_ITERATE_PROC_H
 #define REAP_ITERATE_PROC_H
 
-#include <dirent.h>
-
 #include "definitions.h"
 
 /**
  * @brief Iterates over the running processes.
- *
- * @note User code should not access the iterator's fields.
  */
-typedef struct reapProcIterator {
-    DIR *dir;
-} reapProcIterator;
+typedef struct reapProcIterator reapProcIterator;
 
 /**
  * @brief Initializes an iterator.
  *
- * @param[out] iterator     A pointer to the iterator.
+ * @param[out] iterator     A pointer to the pointer to be initialized.
  *
  * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
-reapProcIteratorInit(reapProcIterator *iterator);
+reapProcIteratorCreate(reapProcIterator **iterator);
 
 /**
- * @brief Closes an iterator.
+ * @brief Destroys an iterator.
  *
  * @param iterator  A pointer to the iterator.
  */
 void
-reapProcIteratorClose(reapProcIterator *iterator);
+reapProcIteratorDestroy(reapProcIterator *iterator);
 
 /**
  * @brief Gets the next result.

@@ -10,7 +10,7 @@ main(int argc, char **argv)
     long value;
     pid_t pid, thread;
     char *endptr;
-    reapThreadIterator iterator;
+    reapThreadIterator *iterator;
 
     if (argc < 2) {
         fprintf(stderr, "Missing argument\n");
@@ -23,17 +23,17 @@ main(int argc, char **argv)
         return REAP_RET_BAD_USAGE;
     }
 
-    ret = reapThreadIteratorInit(pid, &iterator);
+    ret = reapThreadIteratorCreate(pid, &iterator);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapThreadIteratorInit: %s", ERROR(ret));
+        fprintf(stderr, "reapThreadIteratorCreate: %s", ERROR(ret));
         return ret;
     }
 
-    while ((ret = reapThreadIteratorNext(&iterator, &thread)) == REAP_RET_OK) {
+    while ((ret = reapThreadIteratorNext(iterator, &thread)) == REAP_RET_OK) {
         printf("%li\n", (long)thread);
     }
 
-    reapThreadIteratorClose(&iterator);
+    reapThreadIteratorDestroy(iterator);
 
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;

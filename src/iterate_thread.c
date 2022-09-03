@@ -1,3 +1,4 @@
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,6 +6,13 @@
 #include <reap/iterate_thread.h>
 
 #include "internal.h"
+
+struct reapThreadIterator {
+    DIR *dir;
+#ifndef REAP_NO_ERROR_BUFFER
+    pid_t pid;
+#endif
+};
 
 static char *
 formDirectory(pid_t pid, char *dst, unsigned int size)
@@ -14,7 +22,7 @@ formDirectory(pid_t pid, char *dst, unsigned int size)
 }
 
 int
-reapThreadIteratorInit(pid_t pid, reapThreadIterator *iterator)
+reapThreadIteratorCreate(pid_t pid, reapThreadIterator **iterator)
 {
     char buffer[30];
 
@@ -23,17 +31,26 @@ reapThreadIteratorInit(pid_t pid, reapThreadIterator *iterator)
             EMIT_ERROR("The PID must be positive");
         }
         else {
-            EMIT_ERROR("The iterator cannot be NULL");
+            EMIT_ERROR("The pointer cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
 
-    iterator->pid = pid;
-    iterator->dir = opendir(formDirectory(pid, buffer, sizeof(buffer)));
-    if (!iterator->dir) {
+    *iterator = malloc(sizeof(**iterator));
+    if (!*iterator) {
+        EMIT_ERROR("Failed to allocate %zu bytes", sizeof(**iterator));
+        return REAP_RET_OUT_OF_MEMORY;
+    }
+
+#ifndef REAP_NO_ERROR_BUFFER
+    (*iterator)->pid = pid;
+#endif
+    (*iterator)->dir = opendir(formDirectory(pid, buffer, sizeof(buffer)));
+    if (!(*iterator)->dir) {
         int local_errno = errno;
 
         EMIT_ERROR("opendir failed on %s: %s", buffer, strerror(local_errno));
+        free(*iterator);
         return -1 * local_errno;
     }
 
@@ -41,11 +58,11 @@ reapThreadIteratorInit(pid_t pid, reapThreadIterator *iterator)
 }
 
 void
-reapThreadIteratorClose(reapThreadIterator *iterator)
+reapThreadIteratorDestroy(reapThreadIterator *iterator)
 {
-    if (iterator && iterator->dir) {
+    if (iterator) {
         closedir(iterator->dir);
-        iterator->dir = NULL;
+        free(iterator);
     }
 }
 
@@ -56,12 +73,9 @@ reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread)
     char *endptr;
     struct dirent *entry;
 
-    if (!iterator || !iterator->dir || !thread) {
+    if (!iterator || !thread) {
         if (!iterator) {
             EMIT_ERROR("The iterator cannot be NULL");
-        }
-        else if (!iterator->dir) {
-            EMIT_ERROR("This iterator has been closed");
         }
         else {
             EMIT_ERROR("The result cannot be NULL");

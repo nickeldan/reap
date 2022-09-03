@@ -10,7 +10,7 @@ main(int argc, char **argv)
     long value;
     pid_t pid;
     char *endptr;
-    reapFdIterator iterator;
+    reapFdIterator *iterator;
     reapFdResult result;
 
     if (argc == 1) {
@@ -24,17 +24,17 @@ main(int argc, char **argv)
         return REAP_RET_BAD_USAGE;
     }
 
-    ret = reapFdIteratorInit(pid, &iterator);
+    ret = reapFdIteratorCreate(pid, &iterator);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapFdIteratorInit: %s\n", ERROR(ret));
+        fprintf(stderr, "reapFdIteratorCreate: %s\n", ERROR(ret));
         return ret;
     }
 
-    while ((ret = reapFdIteratorNext(&iterator, &result)) == REAP_RET_OK) {
+    while ((ret = reapFdIteratorNext(iterator, &result)) == REAP_RET_OK) {
         printf("%i: %s\n", result.fd, result.file);
     }
 
-    reapFdIteratorClose(&iterator);
+    reapFdIteratorDestroy(iterator);
 
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;

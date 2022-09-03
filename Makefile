@@ -22,7 +22,7 @@ include make.mk
 
 .PHONY: all _all tests format install uninstall clean $(CLEAN_TARGETS)
 
-_all: $(REAP_SHARED_LIBRARY) $(REAP_STATIC_LIBRARY) tests
+_all: $(REAP_SHARED_LIBRARY) $(REAP_STATIC_LIBRARY)
 
 install: /usr/local/lib/$(notdir $(REAP_SHARED_LIBRARY)) $(foreach file,$(REAP_HEADER_FILES),/usr/local/include/reap/$(notdir $(file)))
 

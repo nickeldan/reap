@@ -10,7 +10,6 @@
 #define REAP_ITERATE_NET_H
 
 #include <stdint.h>
-#include <stdio.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
@@ -40,13 +39,8 @@
 
 /**
  * @brief Iterates over all open sockets in the network namespace.
- *
- * @note User code should not access the iterator's fields.
  */
-typedef struct reapNetIterator {
-    FILE *file;
-    unsigned int flags;
-} reapNetIterator;
+typedef struct reapNetIterator reapNetIterator;
 
 /**
  * @brief Identity of a peer for a TCP/UDP socket.
@@ -77,23 +71,23 @@ typedef struct reapNetResult {
 } reapNetResult;
 
 /**
- * @brief Initializes an iterator.
+ * @brief Creates a socket iterator.
  *
- * @param[out] iterator     A pointer to the iterator.
  * @param flags             Flags which determine the IP and transport layers.
+ * @param[out] iterator     A pointer to the pointer to be initialized.
  *
  * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
-reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags);
+reapNetIteratorCreate(unsigned int flags, reapNetIterator **iterator);
 
 /**
- * @brief Closes an iterator.
+ * @brief Destroys an iterator.
  *
  * @param iterator  A pointer to the iterator.
  */
 void
-reapNetIteratorClose(reapNetIterator *iterator);
+reapNetIteratorDestroy(reapNetIterator *iterator);
 
 /**
  * @brief Gets the next result.

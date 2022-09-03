@@ -8,16 +8,16 @@ static int
 showResults(bool udp)
 {
     int ret;
-    reapNetIterator iterator;
+    reapNetIterator *iterator;
     reapNetResult result;
 
-    ret = reapNetIteratorInit(&iterator, REAP_NET_FLAG_UDP * udp);
+    ret = reapNetIteratorCreate(REAP_NET_FLAG_UDP * udp, &iterator);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapNetIteratorInit: %s\n", ERROR(ret));
+        fprintf(stderr, "reapNetIteratorCreate: %s\n", ERROR(ret));
         return ret;
     }
 
-    while ((ret = reapNetIteratorNext(&iterator, &result)) == REAP_RET_OK) {
+    while ((ret = reapNetIteratorNext(iterator, &result)) == REAP_RET_OK) {
         char local_buffer[INET_ADDRSTRLEN], remote_buffer[INET_ADDRSTRLEN];
 
         inet_ntop(AF_INET, &result.local.address, local_buffer, sizeof(local_buffer));
@@ -33,7 +33,7 @@ showResults(bool udp)
         }
     }
 
-    reapNetIteratorClose(&iterator);
+    reapNetIteratorDestroy(iterator);
 
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;
@@ -49,16 +49,16 @@ static int
 showResults6(bool udp)
 {
     int ret;
-    reapNetIterator iterator;
+    reapNetIterator *iterator;
     reapNetResult result;
 
-    ret = reapNetIteratorInit(&iterator, (REAP_NET_FLAG_UDP * udp) | REAP_NET_FLAG_IPV6);
+    ret = reapNetIteratorCreate((REAP_NET_FLAG_UDP * udp) | REAP_NET_FLAG_IPV6, &iterator);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapNetIteratorInit: %s\n", ERROR(ret));
+        fprintf(stderr, "reapNetIteratorCreate: %s\n", ERROR(ret));
         return ret;
     }
 
-    while ((ret = reapNetIteratorNext(&iterator, &result)) == REAP_RET_OK) {
+    while ((ret = reapNetIteratorNext(iterator, &result)) == REAP_RET_OK) {
         char local_buffer[INET6_ADDRSTRLEN], remote_buffer[INET6_ADDRSTRLEN];
 
         inet_ntop(AF_INET6, &result.local.address, local_buffer, sizeof(local_buffer));
@@ -74,7 +74,7 @@ showResults6(bool udp)
         }
     }
 
-    reapNetIteratorClose(&iterator);
+    reapNetIteratorDestroy(iterator);
 
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;
@@ -90,16 +90,16 @@ static int
 showResultsDomain(void)
 {
     int ret;
-    reapNetIterator iterator;
+    reapNetIterator *iterator;
     reapNetResult result;
 
-    ret = reapNetIteratorInit(&iterator, REAP_NET_FLAG_DOMAIN);
+    ret = reapNetIteratorCreate(REAP_NET_FLAG_DOMAIN, &iterator);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapNetIteratorInit: %s\n", ERROR(ret));
+        fprintf(stderr, "reapNetIteratorCreate: %s\n", ERROR(ret));
         return ret;
     }
 
-    while ((ret = reapNetIteratorNext(&iterator, &result)) == REAP_RET_OK) {
+    while ((ret = reapNetIteratorNext(iterator, &result)) == REAP_RET_OK) {
         const char *type_str;
 
         printf("(%lu) ", (unsigned long)result.inode);
@@ -121,7 +121,7 @@ showResultsDomain(void)
         printf("\n");
     }
 
-    reapNetIteratorClose(&iterator);
+    reapNetIteratorDestroy(iterator);
 
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;

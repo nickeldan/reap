@@ -6,20 +6,20 @@ int
 main()
 {
     int ret;
-    reapProcIterator iterator;
+    reapProcIterator *iterator;
     reapProcInfo info;
 
-    ret = reapProcIteratorInit(&iterator);
+    ret = reapProcIteratorCreate(&iterator);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapProcIteratorInit: %s\n", ERROR(ret));
+        fprintf(stderr, "reapProcIteratorCreate: %s\n", ERROR(ret));
         return ret;
     }
 
-    while ((ret = reapProcIteratorNext(&iterator, &info)) == REAP_RET_OK) {
+    while ((ret = reapProcIteratorNext(iterator, &info)) == REAP_RET_OK) {
         printf("%li: %s\n", (long)info.pid, info.exe);
     }
 
-    reapProcIteratorClose(&iterator);
+    reapProcIteratorDestroy(iterator);
 
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;
