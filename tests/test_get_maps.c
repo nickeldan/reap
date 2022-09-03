@@ -10,7 +10,7 @@ main(int argc, char **argv)
     long value;
     pid_t pid;
     char *endptr;
-    reapMapIterator iterator;
+    reapMapIterator *iterator;
     reapMapResult result;
 
     if (argc < 2) {
@@ -24,13 +24,13 @@ main(int argc, char **argv)
         return REAP_RET_BAD_USAGE;
     }
 
-    ret = reapMapIteratorInit(pid, &iterator);
+    ret = reapMapIteratorCreate(pid, &iterator);
     if (ret != REAP_RET_OK) {
-        fprintf(stderr, "reapMapIteratorInit: %s\n", ERROR(ret));
+        fprintf(stderr, "reapMapIteratorCreate: %s\n", ERROR(ret));
         return ret;
     }
 
-    while ((ret = reapMapIteratorNext(&iterator, &result)) == REAP_RET_OK) {
+    while ((ret = reapMapIteratorNext(iterator, &result)) == REAP_RET_OK) {
         printf("%lx - %lx ", result.start, result.end);
         printf("%c", (result.permissions & PROT_READ) ? 'r' : '-');
         printf("%c", (result.permissions & PROT_WRITE) ? 'w' : '-');
@@ -39,7 +39,7 @@ main(int argc, char **argv)
                result.name);
     }
 
-    reapMapIteratorClose(&iterator);
+    reapMapIteratorDestroy(iterator);
 
     if (ret == REAP_RET_DONE) {
         ret = REAP_RET_OK;

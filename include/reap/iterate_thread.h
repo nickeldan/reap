@@ -9,38 +9,31 @@
 #ifndef REAP_ITERATE_THREAD_H
 #define REAP_ITERATE_THREAD_H
 
-#include <dirent.h>
-
 #include "definitions.h"
 
 /**
  * @brief Iterates over the threads of a process.
- *
- * @note User code should not access the iterator's fields.
  */
-typedef struct reapThreadIterator {
-    DIR *dir;
-    pid_t pid;
-} reapThreadIterator;
+typedef struct reapThreadIterator reapThreadIterator;
 
 /**
  * @brief Initializes an iterator.
  *
  * @param pid               The PID whoses threads the iterator will return.
- * @param[out] iterator     A pointer to the iterator.
+ * @param iterator[out]     A pointer to the pointer to be initialized.
  *
- * @return          REAP_RET_OK if successful and an error code otherwise.
+ * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
-reapThreadIteratorInit(pid_t pid, reapThreadIterator *iterator);
+reapThreadIteratorCreate(pid_t pid, reapThreadIterator **iterator);
 
 /**
- * @brief Closes an iterator.
+ * @brief Destroys an iterator.
  *
  * @param iterator  A pointer to the iterator.
  */
 void
-reapThreadIteratorClose(reapThreadIterator *iterator);
+reapThreadIteratorDestroy(reapThreadIterator *iterator);
 
 /**
  * @brief Gets the next result.

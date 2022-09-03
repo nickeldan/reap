@@ -1,22 +1,34 @@
+#include <dirent.h>
 #include <stdlib.h>
 
 #include "reap/iterate_proc.h"
 
 #include "internal.h"
 
+struct reapProcIterator {
+    DIR *dir;
+};
+
 int
-reapProcIteratorInit(reapProcIterator *iterator)
+reapProcIteratorCreate(reapProcIterator **iterator)
 {
     if (!iterator) {
-        EMIT_ERROR("The iterator cannot be NULL");
+        EMIT_ERROR("The pointer cannot be NULL");
         return REAP_RET_BAD_USAGE;
     }
 
-    iterator->dir = opendir("/proc");
-    if (!iterator->dir) {
+    *iterator = malloc(sizeof(**iterator));
+    if (!*iterator) {
+        EMIT_ERROR("Failed to allocate %zu bytes", sizeof(**iterator));
+        return REAP_RET_OUT_OF_MEMORY;
+    }
+
+    (*iterator)->dir = opendir("/proc");
+    if (!(*iterator)->dir) {
         int local_errno = errno;
 
         EMIT_ERROR("opendir failed on /proc: %s", strerror(local_errno));
+        free(*iterator);
         return -1 * local_errno;
     }
 
@@ -24,11 +36,11 @@ reapProcIteratorInit(reapProcIterator *iterator)
 }
 
 void
-reapProcIteratorClose(reapProcIterator *iterator)
+reapProcIteratorDestroy(reapProcIterator *iterator)
 {
-    if (iterator && iterator->dir) {
+    if (iterator) {
         closedir(iterator->dir);
-        iterator->dir = NULL;
+        free(iterator);
     }
 }
 
@@ -38,9 +50,6 @@ reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info)
     if (!iterator || !iterator->dir || !info) {
         if (!iterator) {
             EMIT_ERROR("The iterator cannot be NULL");
-        }
-        else if (!iterator->dir) {
-            EMIT_ERROR("This iterator has been closed");
         }
         else {
             EMIT_ERROR("The info cannot be NULL");

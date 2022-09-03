@@ -1,8 +1,15 @@
 #include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <reap/iterate_net.h>
 
 #include "internal.h"
+
+struct reapNetIterator {
+    FILE *file;
+    unsigned int flags;
+};
 
 // Coped from uapi/linux/net.h in the Linux kernel headers.
 typedef enum {
@@ -162,27 +169,34 @@ parseNet6Line(const char *line, reapNetResult *result)
 }
 
 int
-reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags)
+reapNetIteratorCreate(unsigned int flags, reapNetIterator **iterator)
 {
     char buffer[20], line[256];
 
     if (!iterator) {
-        EMIT_ERROR("The iterator cannot be NULL");
+        EMIT_ERROR("The pointer cannot be NULL");
         return REAP_RET_BAD_USAGE;
     }
 
-    iterator->flags = flags;
-    iterator->file = fopen(formFile(iterator, buffer, sizeof(buffer)), "r");
-    if (!iterator->file) {
+    *iterator = malloc(sizeof(**iterator));
+    if (!*iterator) {
+        EMIT_ERROR("Failed to allocate %zu bytes", sizeof(**iterator));
+        return REAP_RET_OUT_OF_MEMORY;
+    }
+
+    (*iterator)->flags = flags;
+    (*iterator)->file = fopen(formFile(*iterator, buffer, sizeof(buffer)), "r");
+    if (!(*iterator)->file) {
         int local_errno = errno;
 
         EMIT_ERROR("Failed to open %s: %s", buffer, strerror(local_errno));
+        free(*iterator);
         return -1 * local_errno;
     }
 
-    if (!fgets(line, sizeof(line), iterator->file)) {
+    if (!fgets(line, sizeof(line), (*iterator)->file)) {
         EMIT_ERROR("Failed to read from %s", buffer);
-        reapNetIteratorClose(iterator);
+        reapNetIteratorDestroy(*iterator);
         return REAP_RET_FILE_READ;
     }
 
@@ -190,11 +204,11 @@ reapNetIteratorInit(reapNetIterator *iterator, unsigned int flags)
 }
 
 void
-reapNetIteratorClose(reapNetIterator *iterator)
+reapNetIteratorDestroy(reapNetIterator *iterator)
 {
-    if (iterator && iterator->file) {
+    if (iterator) {
         fclose(iterator->file);
-        iterator->file = NULL;
+        free(iterator);
     }
 }
 
@@ -207,9 +221,6 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
     if (!iterator || !iterator->file || !result) {
         if (!iterator) {
             EMIT_ERROR("The iterator cannot be NULL");
-        }
-        else if (!iterator->file) {
-            EMIT_ERROR("This iterator has been closed");
         }
         else {
             EMIT_ERROR("The result cannot be NULL");

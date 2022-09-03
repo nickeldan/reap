@@ -23,12 +23,13 @@
  * @brief Return values.
  */
 enum reapRetValue {
-    REAP_RET_OK,        /**< The function was successful.*/
-    REAP_RET_DONE,      /**< The iteration is finished.*/
-    REAP_RET_BAD_USAGE, /**< A funciton was called with invalid arguments.*/
-    REAP_RET_NOT_FOUND, /**< A requested resource was not found.*/
-    REAP_RET_FILE_READ, /**< Failed to read from a file.*/
-    REAP_RET_OTHER,     /**< Catch-all error.*/
+    REAP_RET_OK,            /**< The function was successful.*/
+    REAP_RET_DONE,          /**< The iteration is finished.*/
+    REAP_RET_BAD_USAGE,     /**< A function was called with invalid arguments.*/
+    REAP_RET_OUT_OF_MEMORY, /**< Memory failed to be allocated.*/
+    REAP_RET_NOT_FOUND,     /**< A requested resource was not found.*/
+    REAP_RET_FILE_READ,     /**< Failed to read from a file.*/
+    REAP_RET_OTHER,         /**< Catch-all error.*/
 };
 
 /**

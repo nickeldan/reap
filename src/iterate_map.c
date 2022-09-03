@@ -1,30 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/sysmacros.h>
 
 #include <reap/iterate_map.h>
 
 #include "internal.h"
 
-int
-reapMapIteratorInit(pid_t pid, reapMapIterator *iterator)
+struct reapMapIterator {
+    FILE *file;
+#ifndef REAP_NO_ERROR_BUFFER
+    pid_t pid;
+#endif
+};
+
+static char *
+formPath(pid_t pid, char *dst, size_t size)
 {
-    char buffer[100];
+    snprintf(dst, size, "/proc/%li/maps", (long)pid);
+    return dst;
+}
+
+int
+reapMapIteratorCreate(pid_t pid, reapMapIterator **iterator)
+{
+    char buffer[30];
 
     if (pid <= 0 || !iterator) {
         if (pid <= 0) {
             EMIT_ERROR("The PID must be positive");
         }
         else {
-            EMIT_ERROR("The iterator cannot be NULL");
+            EMIT_ERROR("The pointer cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
 
-    snprintf(buffer, sizeof(buffer), "/proc/%li/maps", (long)pid);
-    iterator->file = fopen(buffer, "r");
-    if (!iterator->file) {
+    *iterator = malloc(sizeof(**iterator));
+    if (!*iterator) {
+        EMIT_ERROR("Failed to allocate %zu bytes", sizeof(**iterator));
+        return REAP_RET_OUT_OF_MEMORY;
+    }
+
+#ifndef REAP_NO_ERROR_BUFFER
+    (*iterator)->pid = pid;
+#endif
+    (*iterator)->file = fopen(formPath(pid, buffer, sizeof(buffer)), "r");
+    if (!(*iterator)->file) {
         int local_errno = errno;
 
         EMIT_ERROR("fopen failed to open %s: %s", buffer, strerror(local_errno));
+        free(*iterator);
         return -1 * local_errno;
     }
 
@@ -32,11 +57,11 @@ reapMapIteratorInit(pid_t pid, reapMapIterator *iterator)
 }
 
 void
-reapMapIteratorClose(reapMapIterator *iterator)
+reapMapIteratorDestroy(reapMapIterator *iterator)
 {
-    if (iterator && iterator->file) {
+    if (iterator) {
         fclose(iterator->file);
-        iterator->file = NULL;
+        free(iterator);
     }
 }
 
@@ -49,12 +74,9 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
     char r, w, x;
     char line[256];
 
-    if (!iterator || !iterator->file || !result) {
+    if (!iterator || !result) {
         if (!iterator) {
             EMIT_ERROR("The iterator cannot be NULL");
-        }
-        else if (!iterator->file) {
-            EMIT_ERROR("This iterator has been closed");
         }
         else {
             EMIT_ERROR("The result cannot be NULL");
@@ -64,7 +86,11 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
 
     if (!fgets(line, sizeof(line), iterator->file)) {
         if (ferror(iterator->file)) {
-            EMIT_ERROR("Failed to read from maps file");
+#ifndef REAP_NO_ERROR_BUFFER
+            char buffer[30];
+
+            EMIT_ERROR("Failed to read from %s", formPath(iterator->pid, buffer, sizeof(buffer)));
+#endif
             return REAP_RET_FILE_READ;
         }
         else {
@@ -76,12 +102,13 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
     if (num_matches < 9) {
 #ifndef REAP_NO_ERROR_BUFFER
         unsigned int line_length;
+        char buffer[30];
 
         line_length = strnlen(line, sizeof(line));
         if (line[line_length - 1] == '\n') {
             line[line_length - 1] = '\0';
         }
-        EMIT_ERROR("Malformed line in maps file: %s", line);
+        EMIT_ERROR("Malformed line in %s: %s", formPath(iterator->pid, buffer, sizeof(buffer)), line);
 #endif
         return REAP_RET_OTHER;
     }
