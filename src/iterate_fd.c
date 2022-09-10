@@ -1,4 +1,5 @@
 #include <dirent.h>
+#include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -65,9 +66,9 @@ reapFdIteratorDestroy(reapFdIterator *iterator)
 }
 
 int
-reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result)
+reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result, char *file, size_t file_size)
 {
-    char base_buffer[30], buffer[40];
+    char base_buffer[30], buffer[40], path[PATH_MAX];
     struct dirent *entry;
     struct stat fs;
 
@@ -110,39 +111,14 @@ reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result)
         }
 
         snprintf(buffer, sizeof(buffer), "%s/%i", base_buffer, result->fd);
-    } while (betterReadlink(buffer, result->file, sizeof(result->file)) == -1 || stat(buffer, &fs) != 0);
+    } while (betterReadlink(buffer, path, sizeof(path)) == -1 || stat(buffer, &fs) != 0);
 
     result->device = fs.st_dev;
     result->inode = fs.st_ino;
     result->mode = fs.st_mode;
 
-    return REAP_RET_OK;
-}
-
-int
-reapReadFd(pid_t pid, int fd, char *dest, size_t size)
-{
-    char buffer[40];
-
-    if (pid <= 0 || fd < 0 || !dest) {
-        if (pid <= 0) {
-            EMIT_ERROR("The PID must be positive");
-        }
-        else if (fd < 0) {
-            EMIT_ERROR("The file descriptor cannot be negative");
-        }
-        else {
-            EMIT_ERROR("The destination buffer cannot be NULL");
-        }
-        return REAP_RET_BAD_USAGE;
-    }
-
-    snprintf(buffer, sizeof(buffer), "/proc/%li/fd/%i", (long)pid, fd);
-    if (betterReadlink(buffer, dest, size) == -1) {
-        int local_errno = errno;
-
-        EMIT_ERROR("readlink failed on %s: %s", buffer, strerror(local_errno));
-        return -1 * local_errno;
+    if (file) {
+        snprintf(file, file_size, "%s", path);
     }
 
     return REAP_RET_OK;

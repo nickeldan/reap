@@ -30,7 +30,7 @@ reapGetError(void)
 #endif  // REAP_NO_ERROR_BUFFER
 
 int
-reapGetProcInfo(pid_t pid, reapProcInfo *info)
+reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
 {
     int ret = REAP_RET_OK;
     unsigned int num_found = 0;
@@ -53,7 +53,7 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info)
     snprintf(prefix, sizeof(prefix), "/proc/%li", (long)pid);
     snprintf(buffer, sizeof(buffer), "%s/exe", prefix);
 
-    if (betterReadlink(buffer, info->exe, sizeof(info->exe)) == -1) {
+    if (exe_path && path_size > 0 && betterReadlink(buffer, exe_path, path_size) == -1) {
         int local_errno = errno;
 
         if (local_errno == ENOENT) {

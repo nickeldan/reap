@@ -45,7 +45,7 @@ reapProcIteratorDestroy(reapProcIterator *iterator)
 }
 
 int
-reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info)
+reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info, char *exe_path, size_t path_size)
 {
     if (!iterator || !iterator->dir || !info) {
         if (!iterator) {
@@ -79,7 +79,7 @@ reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info)
 
         value = strtol(entry->d_name, &endptr, 10);
         if (*endptr == '\0' && value > 0 && (pid = value) == value) {
-            if (reapGetProcInfo(pid, info) == REAP_RET_OK) {
+            if (reapGetProcInfo(pid, info, exe_path, path_size) == REAP_RET_OK) {
                 return REAP_RET_OK;
             }
         }

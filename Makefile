@@ -5,8 +5,6 @@ else
     CFLAGS += -O2 -DNDEBUG
 endif
 
-TESTS := $(patsubst tests/%.c,%,$(wildcard tests/*.c))
-
 all: _all
 
 BUILD_DEPS :=
@@ -19,6 +17,9 @@ endif
 
 REAP_DIR := .
 include make.mk
+
+TEST_DIR := tests
+include $(TEST_DIR)/make.mk
 
 .PHONY: all _all tests format install uninstall clean $(CLEAN_TARGETS)
 
@@ -39,13 +40,9 @@ uninstall:
 	rm -rf /usr/local/include/reap
 	rm -f /usr/local/lib/$(notdir $(REAP_SHARED_LIBRARY))
 
-tests: $(TESTS)
-
-test_%: tests/test_%.c tests/common.h $(REAP_STATIC_LIBRARY) $(REAP_HEADER_FILES)
-	$(CC) $(CFLAGS) $(REAP_INCLUDE_FLAGS) -o $@ $(filter-out %.h,$^)
-
 format:
 	find . -name '*.[hc]' -print0 | xargs -0 -n 1 clang-format -i
+	find tests -name '*.py' -print0 | xargs -0 -n 1 black -q -l 110
 
 clean: $(CLEAN_TARGETS)
-	@rm -f $(TESTS) $(DEPS_FILES)
+	@rm -f $(DEPS_FILES)

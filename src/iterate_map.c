@@ -1,3 +1,4 @@
+#include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/sysmacros.h>
@@ -66,13 +67,13 @@ reapMapIteratorDestroy(reapMapIterator *iterator)
 }
 
 int
-reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
+reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char *name, size_t name_size)
 {
     int num_matches;
     unsigned int major, minor;
     unsigned long inode;
     char r, w, x;
-    char line[256];
+    char line[PATH_MAX + 100], buffer[PATH_MAX];
 
     if (!iterator || !result) {
         if (!iterator) {
@@ -87,9 +88,10 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
     if (!fgets(line, sizeof(line), iterator->file)) {
         if (ferror(iterator->file)) {
 #ifndef REAP_NO_ERROR_BUFFER
-            char buffer[30];
+            char error_buffer[30];
 
-            EMIT_ERROR("Failed to read from %s", formPath(iterator->pid, buffer, sizeof(buffer)));
+            EMIT_ERROR("Failed to read from %s",
+                       formPath(iterator->pid, error_buffer, sizeof(error_buffer)));
 #endif
             return REAP_RET_FILE_READ;
         }
@@ -97,24 +99,25 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
             return REAP_RET_DONE;
         }
     }
-    num_matches = sscanf(line, "%lx-%lx %c%c%c%*c %x %x:%x %lu %s", &result->start, &result->end, &r, &w, &x,
-                         &result->offset, &major, &minor, &inode, result->name);
+    num_matches = sscanf(line, "%llx-%llx %c%c%c%*c %llx %x:%x %lu %s", &result->start, &result->end, &r, &w,
+                         &x, &result->offset, &major, &minor, &inode, buffer);
     if (num_matches < 9) {
 #ifndef REAP_NO_ERROR_BUFFER
         unsigned int line_length;
-        char buffer[30];
+        char error_buffer[30];
 
         line_length = strnlen(line, sizeof(line));
         if (line[line_length - 1] == '\n') {
             line[line_length - 1] = '\0';
         }
-        EMIT_ERROR("Malformed line in %s: %s", formPath(iterator->pid, buffer, sizeof(buffer)), line);
+        EMIT_ERROR("Malformed line in %s: %s", formPath(iterator->pid, error_buffer, sizeof(error_buffer)),
+                   line);
 #endif
         return REAP_RET_OTHER;
     }
 
     if (num_matches == 9) {
-        result->name[0] = '\0';
+        buffer[0] = '\0';
     }
 
     result->permissions = 0;
@@ -130,6 +133,10 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result)
 
     result->device = makedev(major, minor);
     result->inode = inode;
+
+    if (name) {
+        snprintf(name, name_size, "%s", buffer);
+    }
 
     return REAP_RET_OK;
 }

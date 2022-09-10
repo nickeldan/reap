@@ -1,6 +1,6 @@
 /**
  * @file iterate_net.h
- * @author Daniel walker
+ * @author Daniel Walker
  * @brief Exposes namespace-wide socket iteration.
  * @copyright Copyright (c) 2022
  *

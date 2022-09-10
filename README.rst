@@ -171,9 +171,9 @@ where **reapMapResult** is defined as
 .. code-block:: c
 
     typedef struct reapMapResult {
-        unsigned long start; // The start address of the memory section.
-        unsigned long end; // The end address of the memory section.
-        unsigned int offset; // The offset of the memory section within the referent file (if any).
+        unsigned long long start; // The start address of the memory section.
+        unsigned long long end; // The end address of the memory section.
+        unsigned long long offset; // The offset of the memory section within the referent file (if any).
         int permissions; // The permissions of the memory section.
         ino_t inode; // The inode of the referent file (if any).
         dev_t device; // The device number of the referent file (if any).
