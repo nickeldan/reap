@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -49,31 +50,6 @@ stripLine(char *line)
 
 #endif
 
-static void
-storeU32(uint32_t num, uint8_t *dst)
-{
-    num = htonl(num);
-
-    for (int k = 3; k >= 0; k--) {
-        dst[k] = num & 0xff;
-        num >>= 8;
-    }
-}
-
-static unsigned char
-hexToNum(char c)
-{
-    if (c >= '0' && c <= '9') {
-        return c - '0';
-    }
-    else if (c >= 'A' && c <= 'F') {
-        return c - 'A' + 10;
-    }
-    else {
-        return c - 'a' + 10;
-    }
-}
-
 static int
 nextUnix(const reapNetIterator *iterator, reapNetResult *result)
 {
@@ -115,31 +91,26 @@ nextUnix(const reapNetIterator *iterator, reapNetResult *result)
     return REAP_RET_DONE;
 }
 
-static void
-populateAddr6(uint8_t *addr, const char *hex)
-{
-    for (int k = 0; k < IPV6_SIZE; k++) {
-        addr[k] = (hexToNum(hex[2 * k]) << 4) | hexToNum(hex[2 * k + 1]);
-    }
-}
-
 static int
 parseNet4Line(const char *line, reapNetResult *result)
 {
     unsigned int local_addr, remote_addr, local_port, remote_port;
     unsigned long inode_long;
+    uint32_t intermediate;
 
-    if (sscanf(line, " %*u: %x:%x %x:%x %*s %*s %*s %*s %*u %*u %lu", &local_addr, &local_port, &remote_addr,
-               &remote_port, &inode_long) != 5) {
+    if (sscanf(line, " %*u: %8x:%x %8x:%x %*s %*s %*s %*s %*u %*u %lu", &local_addr, &local_port,
+               &remote_addr, &remote_port, &inode_long) != 5) {
         return REAP_RET_OTHER;
     }
 
-    storeU32(local_addr, result->local.address);
+    intermediate = ntohl(local_addr);
+    memcpy(&result->local.address, &intermediate, 4);
+
+    intermediate = ntohl(remote_addr);
+    memcpy(&result->remote.address, &intermediate, 4);
+
     result->local.port = local_port;
-
-    storeU32(remote_addr, result->remote.address);
     result->remote.port = remote_port;
-
     result->inode = inode_long;
 
     return REAP_RET_OK;
@@ -150,19 +121,26 @@ parseNet6Line(const char *line, reapNetResult *result)
 {
     unsigned int local_port, remote_port;
     unsigned long inode_long;
-    char local_addr[33], remote_addr[33];
+    uint32_t local_addr[4], remote_addr[4];
 
-    if (sscanf(line, " %*u: %32s:%x %32s:%x %*s %*s %*s %*s %*u %*u %lu", local_addr, &local_port,
-               remote_addr, &remote_port, &inode_long) != 5) {
+    if (sscanf(line, " %*u: %8x%8x%8x%8x:%x %8x%8x%8x%8x:%x %*s %*s %*s %*s %*u %*u %lu", &local_addr[0],
+               &local_addr[1], &local_addr[2], &local_addr[3], &local_port, &remote_addr[0], &remote_addr[1],
+               &remote_addr[2], &local_addr[3], &remote_port, &inode_long) != 11) {
         return REAP_RET_OTHER;
     }
 
-    populateAddr6(result->local.address, local_addr);
+    for (int k = 0; k < 4; k++) {
+        uint32_t intermediate;
+
+        intermediate = htonl(local_addr[k]);
+        memcpy(&result->local.address + 4 * k, &intermediate, 4);
+
+        intermediate = htonl(remote_addr[k]);
+        memcpy(&result->remote.address + 4 * k, &intermediate, 4);
+    }
+
     result->local.port = local_port;
-
-    populateAddr6(result->remote.address, remote_addr);
     result->remote.port = remote_port;
-
     result->inode = inode_long;
 
     return REAP_RET_OK;
