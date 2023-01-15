@@ -9,9 +9,7 @@
 
 struct reapMapIterator {
     FILE *file;
-#ifndef REAP_NO_ERROR_BUFFER
     pid_t pid;
-#endif
 };
 
 static char *
@@ -42,9 +40,7 @@ reapMapIteratorCreate(pid_t pid, reapMapIterator **iterator)
         return REAP_RET_OUT_OF_MEMORY;
     }
 
-#ifndef REAP_NO_ERROR_BUFFER
     (*iterator)->pid = pid;
-#endif
     (*iterator)->file = fopen(formPath(pid, buffer, sizeof(buffer)), "r");
     if (!(*iterator)->file) {
         int local_errno = errno;
@@ -87,12 +83,10 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char
 
     if (!fgets(line, sizeof(line), iterator->file)) {
         if (ferror(iterator->file)) {
-#ifndef REAP_NO_ERROR_BUFFER
             char error_buffer[30];
 
             EMIT_ERROR("Failed to read from %s",
                        formPath(iterator->pid, error_buffer, sizeof(error_buffer)));
-#endif
             return REAP_RET_FILE_READ;
         }
         else {
@@ -102,7 +96,6 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char
     num_matches = sscanf(line, "%llx-%llx %c%c%c%*c %llx %x:%x %lu %s", &result->start, &result->end, &r, &w,
                          &x, &result->offset, &major, &minor, &inode, buffer);
     if (num_matches < 9) {
-#ifndef REAP_NO_ERROR_BUFFER
         unsigned int line_length;
         char error_buffer[30];
 
@@ -112,7 +105,6 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char
         }
         EMIT_ERROR("Malformed line in %s: %s", formPath(iterator->pid, error_buffer, sizeof(error_buffer)),
                    line);
-#endif
         return REAP_RET_OTHER;
     }
 

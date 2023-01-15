@@ -7,8 +7,6 @@
 
 #include "internal.h"
 
-#ifndef REAP_NO_ERROR_BUFFER
-
 static _Thread_local char errorBuffer[256] = {0};
 
 void
@@ -26,8 +24,6 @@ reapGetError(void)
 {
     return errorBuffer;
 }
-
-#endif  // REAP_NO_ERROR_BUFFER
 
 int
 reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
@@ -48,7 +44,7 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
         return REAP_RET_BAD_USAGE;
     }
 
-    info->pid = pid;
+    info->tid = pid;
 
     snprintf(prefix, sizeof(prefix), "/proc/%li", (long)pid);
     snprintf(buffer, sizeof(buffer), "%s/exe", prefix);
@@ -93,7 +89,7 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
             found_parent = true;
         }
         else if (!found_tgid && sscanf(line, "Tgid: %lu\n", &tgid) == 1) {
-            info->tgid = tgid;
+            info->pid = tgid;
             found_tgid = true;
         }
         else {

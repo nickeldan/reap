@@ -44,7 +44,6 @@ reapErrorString(int value)
 #endif
     ;
 
-#ifndef REAP_NO_ERROR_BUFFER
 /**
  * @brief   Acquires the thread-local buffer holding the last error message.
  *
@@ -56,7 +55,6 @@ reapGetError(void)
     __attribute__((pure))
 #endif
     ;
-#endif
 
 /**
  * @brief Information concerning a running process.
@@ -64,7 +62,7 @@ reapGetError(void)
 typedef struct reapProcInfo {
     pid_t pid;  /**< Process ID.*/
     pid_t ppid; /**< Parent process ID.*/
-    pid_t tgid; /**< Task group ID.*/
+    pid_t tid;  /**< Task ID.*/
     uid_t uid;  /**< ID of the user running the process.*/
     uid_t euid; /**< Effective user ID running the process.*/
     gid_t gid;  /**< Group ID of the user running the process.*/

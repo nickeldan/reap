@@ -1,13 +1,15 @@
-TEST_BINARIES := $(patsubst $(TEST_DIR)/test_%.c,$(TEST_DIR)/test_binary_%,$(wildcard $(TEST_DIR)/test_*.c))
+TEST_SOURCE_FILES := $(wildcard $(TEST_DIR)/*.c)
+TEST_BINARY := $(TEST_DIR)/test
 
-$(TEST_DIR)/test_binary_%: $(TEST_DIR)/test_%.c $(REAP_STATIC_LIBRARY)
-	$(CC) $(CFLAGS) $(REAP_INCLUDE_FLAGS) -o $@ $^
+.PHONY: tests
 
-TEST_IMAGE := reap_testing
+tests: $(TEST_BINARY)
+	$<
 
-tests: $(TEST_BINARIES)
+$(TEST_BINARY): $(TEST_SOURCE_FILES) $(REAP_STATIC_LIBRARY)
+	$(CC) $(CFLAGS) $(REAP_INCLUDE_FLAGS) $^ -lscrutiny -pthread -o $@
 
 test_clean:
-	@rm -f $(TEST_BINARIES)
+	@rm -f $(TEST_BINARY)
 
 CLEAN_TARGETS += test_clean
