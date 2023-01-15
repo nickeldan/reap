@@ -9,9 +9,7 @@
 
 struct reapThreadIterator {
     DIR *dir;
-#ifndef REAP_NO_ERROR_BUFFER
     pid_t pid;
-#endif
 };
 
 static char *
@@ -42,9 +40,7 @@ reapThreadIteratorCreate(pid_t pid, reapThreadIterator **iterator)
         return REAP_RET_OUT_OF_MEMORY;
     }
 
-#ifndef REAP_NO_ERROR_BUFFER
     (*iterator)->pid = pid;
-#endif
     (*iterator)->dir = opendir(formDirectory(pid, buffer, sizeof(buffer)));
     if (!(*iterator)->dir) {
         int local_errno = errno;
@@ -101,12 +97,10 @@ reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread)
 
     value = strtol(entry->d_name, &endptr, 10);
     if (*endptr != '\0' || value <= 0 || (*thread = value) != value) {
-#ifndef REAP_NO_ERROR_BUFFER
         char buffer[30];
 
         EMIT_ERROR("Invalid file in %s: %s", formDirectory(iterator->pid, buffer, sizeof(buffer)),
                    entry->d_name);
-#endif
         return REAP_RET_OTHER;
     }
 

@@ -42,7 +42,6 @@ uninstall:
 
 format:
 	find . -name '*.[hc]' -print0 | xargs -0 -n 1 clang-format -i
-	find tests -name '*.py' -print0 | xargs -0 -n 1 black -q -l 110
 
 clean: $(CLEAN_TARGETS)
 	@rm -f $(DEPS_FILES)
