@@ -32,7 +32,8 @@ procCleanup(void *group_ctx)
     free(group_ctx);
 }
 
-SCR_TEST_FN(find_self)
+void
+find_self(void)
 {
     pid_t pid;
     reapProcInfo info;
@@ -51,7 +52,8 @@ SCR_TEST_FN(find_self)
     SCR_ASSERT_EQ(info.egid, getegid());
 }
 
-SCR_TEST_FN(get_self_path)
+void
+get_self_path(void)
 {
     pid_t pid;
     reapProcInfo info;
@@ -65,7 +67,8 @@ SCR_TEST_FN(get_self_path)
     SCR_ASSERT_STR_EQ(path, SCR_GROUP_CTX());
 }
 
-SCR_TEST_FN(iterate_procs)
+void
+iterate_procs(void)
 {
     int ret;
     pid_t pid;

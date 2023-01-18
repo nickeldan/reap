@@ -96,18 +96,14 @@ parseNet4Line(const char *line, reapNetResult *result)
 {
     unsigned int local_addr, remote_addr, local_port, remote_port;
     unsigned long inode_long;
-    uint32_t intermediate;
 
     if (sscanf(line, " %*u: %8x:%x %8x:%x %*s %*s %*s %*s %*u %*u %lu", &local_addr, &local_port,
                &remote_addr, &remote_port, &inode_long) != 5) {
         return REAP_RET_OTHER;
     }
 
-    intermediate = ntohl(local_addr);
-    memcpy(&result->local.address, &intermediate, 4);
-
-    intermediate = ntohl(remote_addr);
-    memcpy(&result->remote.address, &intermediate, 4);
+    memcpy(&result->local.address, &local_addr, 4);
+    memcpy(&result->remote.address, &remote_addr, 4);
 
     result->local.port = local_port;
     result->remote.port = remote_port;
@@ -125,18 +121,13 @@ parseNet6Line(const char *line, reapNetResult *result)
 
     if (sscanf(line, " %*u: %8x%8x%8x%8x:%x %8x%8x%8x%8x:%x %*s %*s %*s %*s %*u %*u %lu", &local_addr[0],
                &local_addr[1], &local_addr[2], &local_addr[3], &local_port, &remote_addr[0], &remote_addr[1],
-               &remote_addr[2], &local_addr[3], &remote_port, &inode_long) != 11) {
+               &remote_addr[2], &remote_addr[3], &remote_port, &inode_long) != 11) {
         return REAP_RET_OTHER;
     }
 
     for (int k = 0; k < 4; k++) {
-        uint32_t intermediate;
-
-        intermediate = htonl(local_addr[k]);
-        memcpy(&result->local.address + 4 * k, &intermediate, 4);
-
-        intermediate = htonl(remote_addr[k]);
-        memcpy(&result->remote.address + 4 * k, &intermediate, 4);
+        memcpy(&result->local.address[4 * k], &local_addr[k], 4);
+        memcpy(&result->remote.address[4 * k], &remote_addr[k], 4);
     }
 
     result->local.port = local_port;

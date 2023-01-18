@@ -32,7 +32,8 @@ threadFunc(void *args)
     return NULL;
 }
 
-SCR_TEST_FN(iterate_threads)
+void
+iterate_threads(void)
 {
     int ret;
     pthread_t thread;
