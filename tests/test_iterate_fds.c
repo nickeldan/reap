@@ -15,35 +15,42 @@
 void *
 fdSetup(void *global_ctx)
 {
+    int fd;
     char *template;
 
     (void)global_ctx;
 
     SCR_ASSERT_PTR_NEQ((template = malloc(25)), NULL);
     snprintf(template, 25, "/tmp/reap_test_XXXXXX");
+    fd = mkstemp(template);
+    if (fd < 0) {
+        SCR_ERROR("mkstemp: %s", strerror(errno));
+    }
+    close(fd);
     return template;
 }
 
 void
 fdCleanup(void *group_ctx)
 {
+    unlink((char *)group_ctx);
     free(group_ctx);
 }
 
 void
-iterate_fds(void)
+iterateFds(void)
 {
     int fd, ret;
     struct stat fs;
     reapFdIterator *iterator;
     reapFdResult result;
-    char *template;
+    char *tmp_file;
     char path[PATH_MAX];
 
-    template = SCR_GROUP_CTX();
-    fd = mkstemp(template);
+    tmp_file = SCR_GROUP_CTX();
+    fd = open(tmp_file, O_RDONLY);
     if (fd < 0) {
-        SCR_ERROR("mkstemp: %s", strerror(errno));
+        SCR_ERROR("open (%s): %s", tmp_file, strerror(errno));
     }
 
     if (fstat(fd, &fs) != 0) {
@@ -58,7 +65,7 @@ iterate_fds(void)
         if (result.fd == fd) {
             SCR_ASSERT_EQ(result.inode, fs.st_ino);
             SCR_ASSERT_EQ(result.device, fs.st_dev);
-            SCR_ASSERT_STR_EQ(path, template);
+            SCR_ASSERT_STR_EQ(path, tmp_file);
 
             close(fd);
             reapFdIteratorDestroy(iterator);

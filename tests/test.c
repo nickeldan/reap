@@ -5,39 +5,57 @@ procSetup(void *global_ctx);
 void
 procCleanup(void *group_ctx);
 void
-find_self(void);
+findSelf(void);
 void
-get_self_path(void);
+getSelfPath(void);
 void
-iterate_procs(void);
+iterateProcs(void);
 
 void *
 fdSetup(void *global_ctx);
 void
 fdCleanup(void *group_ctx);
 void
-iterate_fds(void);
+iterateFds(void);
+
+void
+serverCleanup(void *group_ctx);
 
 void *
-tcpIpv4Setup(void *global_ctx);
+ipv4TcpServerSetup(void *global_ctx);
 void
-socketCleanup(void *group_ctx);
+ipv4TcpFindServer(void);
 void
-iterate_tcp_ipv4_find_server(void);
-void
-iterate_tcp_ipv4_find_client(void);
+ipv4TcpFindClient(void);
 
 void *
-tcpIpv6Setup(void *global_ctx);
+ipv6TcpServerSetup(void *global_ctx);
 void
-iterate_tcp_ipv6_find_server(void);
+ipv6TcpFindServer(void);
 void
-iterate_tcp_ipv6_find_client(void);
+ipv6TcpFindClient(void);
+
+void *
+ipv4UdpServerSetup(void *global_ctx);
+void
+ipv4UdpFindServer(void);
+
+void *
+ipv6UdpServerSetup(void *global_ctx);
+void
+ipv6UdpFindServer(void);
+
+void *
+domainServerSetup(void *global_ctx);
+void
+domainServerCleanup(void *group_ctx);
+void
+domainFindServer(void);
 
 void
-iterate_threads(void);
+iterateThreads(void);
 void
-iterate_maps(void);
+iterateMaps(void);
 
 int
 main()
@@ -49,24 +67,33 @@ main()
     runner = scrRunnerCreate();
 
     group = scrGroupCreate(runner, procSetup, procCleanup);
-    scrGroupAddTest(group, "Get proc info", find_self, 0, 0);
-    scrGroupAddTest(group, "Get self path", get_self_path, 0, 0);
-    scrGroupAddTest(group, "Proc iterator", iterate_procs, 5, 0);
+    scrGroupAddTest(group, "Get proc info", findSelf, 0, 0);
+    scrGroupAddTest(group, "Get self path", getSelfPath, 0, 0);
+    scrGroupAddTest(group, "Proc iterator", iterateProcs, 5, 0);
 
     group = scrGroupCreate(runner, fdSetup, fdCleanup);
-    scrGroupAddTest(group, "File descriptor iterator", iterate_fds, 5, 0);
+    scrGroupAddTest(group, "File descriptor iterator", iterateFds, 5, 0);
 
-    group = scrGroupCreate(runner, tcpIpv4Setup, socketCleanup);
-    scrGroupAddTest(group, "Net iterator find TCP IPv4 server", iterate_tcp_ipv4_find_server, 5, 0);
-    scrGroupAddTest(group, "Net iterator find TCP IPv4 client", iterate_tcp_ipv4_find_client, 5, 0);
+    group = scrGroupCreate(runner, ipv4TcpServerSetup, serverCleanup);
+    scrGroupAddTest(group, "Net iterator find IPv4 TCP server", ipv4TcpFindServer, 5, 0);
+    scrGroupAddTest(group, "Net iterator find IPv4 TCP client", ipv4TcpFindClient, 5, 0);
 
-    group = scrGroupCreate(runner, tcpIpv6Setup, socketCleanup);
-    scrGroupAddTest(group, "Net iterator find TCP IPv6 server", iterate_tcp_ipv6_find_server, 5, 0);
-    scrGroupAddTest(group, "Net iterator find TCP IPv6 client", iterate_tcp_ipv6_find_client, 5, 0);
+    group = scrGroupCreate(runner, ipv6TcpServerSetup, serverCleanup);
+    scrGroupAddTest(group, "Net iterator find IPv6 TCP server", ipv6TcpFindServer, 5, 0);
+    scrGroupAddTest(group, "Net iterator find IPv6 TCP client", ipv6TcpFindClient, 5, 0);
+
+    group = scrGroupCreate(runner, ipv4UdpServerSetup, serverCleanup);
+    scrGroupAddTest(group, "Net iterator find IPv4 UDP server", ipv4UdpFindServer, 5, 0);
+
+    group = scrGroupCreate(runner, ipv6UdpServerSetup, serverCleanup);
+    scrGroupAddTest(group, "Net iterator find IPv6 UDP server", ipv6UdpFindServer, 5, 0);
+
+    group = scrGroupCreate(runner, domainServerSetup, domainServerCleanup);
+    scrGroupAddTest(group, "Domain socket iterator find server", domainFindServer, 5, 0);
 
     group = scrGroupCreate(runner, NULL, NULL);
-    scrGroupAddTest(group, "Thread iterator", iterate_threads, 5, 0);
-    scrGroupAddTest(group, "Map iterator", iterate_maps, 5, 0);
+    scrGroupAddTest(group, "Thread iterator", iterateThreads, 5, 0);
+    scrGroupAddTest(group, "Map iterator", iterateMaps, 5, 0);
 
     ret = scrRunnerRun(runner, NULL, NULL);
     scrRunnerDestroy(runner);
