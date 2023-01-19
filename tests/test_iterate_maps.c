@@ -12,7 +12,7 @@
 #include <reap/reap.h>
 
 void
-iterate_maps(void)
+iterateMaps(void)
 {
     int ret;
     struct stat fs;

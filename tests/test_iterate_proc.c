@@ -19,7 +19,6 @@ procSetup(void *global_ctx)
     SCR_ASSERT_PTR_NEQ((path = malloc(PATH_MAX)), NULL);
 
     if (readlink("/proc/self/exe", path, PATH_MAX) < 0) {
-        free(path);
         SCR_ERROR("readlink (/proc/self/exe): %s", strerror(errno));
     }
 
@@ -33,7 +32,7 @@ procCleanup(void *group_ctx)
 }
 
 void
-find_self(void)
+findSelf(void)
 {
     pid_t pid;
     reapProcInfo info;
@@ -53,7 +52,7 @@ find_self(void)
 }
 
 void
-get_self_path(void)
+getSelfPath(void)
 {
     pid_t pid;
     reapProcInfo info;
@@ -68,7 +67,7 @@ get_self_path(void)
 }
 
 void
-iterate_procs(void)
+iterateProcs(void)
 {
     int ret;
     pid_t pid;

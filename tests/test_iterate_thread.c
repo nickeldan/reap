@@ -33,7 +33,7 @@ threadFunc(void *args)
 }
 
 void
-iterate_threads(void)
+iterateThreads(void)
 {
     int ret;
     pthread_t thread;
