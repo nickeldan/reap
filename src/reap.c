@@ -101,8 +101,8 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
         }
     }
 
-    EMIT_ERROR("No %s line found in %s",
-               found_gid ? found_uid ? found_tgid ? "PPid" : "Tgid" : "Uid" : "Gid", buffer);
+    EMIT_ERROR("No %s line found in %s", found_gid ? found_uid ? found_tgid ? "PPid" : "Tgid" : "Uid" : "Gid",
+               buffer);
     ret = REAP_RET_OTHER;
 
 done:

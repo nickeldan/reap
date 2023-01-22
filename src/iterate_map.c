@@ -85,8 +85,7 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char
         if (ferror(iterator->file)) {
             char error_buffer[30];
 
-            EMIT_ERROR("Failed to read from %s",
-                       formPath(iterator->pid, error_buffer, sizeof(error_buffer)));
+            EMIT_ERROR("Failed to read from %s", formPath(iterator->pid, error_buffer, sizeof(error_buffer)));
             return REAP_RET_FILE_READ;
         }
         else {
