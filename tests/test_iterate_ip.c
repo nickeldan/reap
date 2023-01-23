@@ -40,7 +40,14 @@ bindServer(int listener, const struct sockaddr *addr, socklen_t slen, bool tcp)
     }
 
     if (bind(listener, addr, slen) != 0) {
-        SCR_ERROR("bind: %s", strerror(errno));
+        int local_errno = errno;
+
+        // At the moment, I can't get IPv6 tests to work in my GitHub Action.
+        if (addr->sa_family == AF_INET6 && local_errno == EADDRNOTAVAIL) {
+            SCR_TEST_SKIP();
+        }
+
+        SCR_ERROR("bind: %s", strerror(local_errno));
     }
 
     if (tcp && listen(listener, 1) != 0) {
