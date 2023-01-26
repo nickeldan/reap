@@ -17,7 +17,7 @@
 typedef struct reapThreadIterator reapThreadIterator;
 
 /**
- * @brief Initializes an iterator.
+ * @brief Creates a thread iterator.
  *
  * @param pid               The PID whoses threads the iterator will return.
  * @param iterator[out]     A pointer to the pointer to be initialized.

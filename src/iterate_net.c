@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <reap/iterate_net.h>
 
@@ -34,8 +35,6 @@ formFile(const reapNetIterator *iterator, char *dst, unsigned int size)
     return dst;
 }
 
-#ifndef REAP_NO_ERROR_BUFFER
-
 static char *
 stripLine(char *line)
 {
@@ -47,8 +46,6 @@ stripLine(char *line)
     }
     return line;
 }
-
-#endif
 
 static int
 nextUnix(const reapNetIterator *iterator, reapNetResult *result)
@@ -76,9 +73,9 @@ nextUnix(const reapNetIterator *iterator, reapNetResult *result)
         if (path[0] == '\0' && !result->connected) {
             continue;
         }
-        if (snprintf(result->path, sizeof(result->path), "%s", path) < 0) {
-            (void)0;  // Suppresses -Wformat-truncation warning.
-        }
+
+        strncpy(result->path, path, sizeof(result->path));
+        result->path[sizeof(result->path) - 1] = '\0';
         result->inode = inode_long;
         return REAP_RET_OK;
     }
@@ -205,11 +202,9 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
 
     if (!fgets(line, sizeof(line), iterator->file)) {
         if (ferror(iterator->file)) {
-#ifndef REAP_NO_ERROR_BUFFER
             char buffer[20];
 
             EMIT_ERROR("Failed to read from %s", formFile(iterator, buffer, sizeof(buffer)));
-#endif
             return REAP_RET_FILE_READ;
         }
         else {
@@ -219,11 +214,9 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
 
     ret = (iterator->flags & REAP_NET_FLAG_IPV6 ? parseNet6Line : parseNet4Line)(line, result);
     if (ret == REAP_RET_OTHER) {
-#ifndef REAP_NO_ERROR_BUFFER
         char buffer[20];
 
         EMIT_ERROR("Malformed line in %s: %s", formFile(iterator, buffer, sizeof(buffer)), stripLine(line));
-#endif
     }
     return ret;
 }

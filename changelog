@@ -1,3 +1,12 @@
+1.0.0:
+    - Made the iterator types opaque.
+    - reapGetError is always defined.
+    - Removed reapErrorString.
+    - Made the size of the error buffer configurable at compile time.
+    - Fixed a bug related to the identification of PID vs. TID.
+    - Fixed an endianness bug in the parsing of IPv4/IPv6 addresses.
+    - Testing is now done via Scrutiny.
+
 0.9.1:
     - Replaced certain return values with negative errno values.
     - make.mk now creates any necessary directories.

@@ -11,6 +11,7 @@
 #define REAP_ITERATE_PROC_H
 
 #include "definitions.h"
+#include "proc.h"
 
 /**
  * @brief Iterates over the running processes.
@@ -18,7 +19,7 @@
 typedef struct reapProcIterator reapProcIterator;
 
 /**
- * @brief Initializes an iterator.
+ * @brief Creates a process iterator.
  *
  * @param[out] iterator     A pointer to the pointer to be initialized.
  *

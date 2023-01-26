@@ -26,8 +26,8 @@ typedef struct reapMapResult {
     unsigned long long end;    /**< The end of the memory section.*/
     unsigned long long offset; /**< The offset of the memory section in the referent file.*/
     int permissions;           /**< The permissions of the memory section.*/
-    ino_t inode;               /**< The inode of the referent file.*/
     dev_t device;              /**< The device number of the referent file.*/
+    ino_t inode;               /**< The inode of the referent file.*/
 } reapMapResult;
 
 /**

@@ -7,24 +7,6 @@
 
 #include "internal.h"
 
-static _Thread_local char errorBuffer[256] = {0};
-
-void
-emitError(const char *format, ...)
-{
-    va_list args;
-
-    va_start(args, format);
-    vsnprintf(errorBuffer, sizeof(errorBuffer), format, args);
-    va_end(args);
-}
-
-char *
-reapGetError(void)
-{
-    return errorBuffer;
-}
-
 int
 reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
 {

@@ -1,21 +1,24 @@
-#include <string.h>
+#include <stdarg.h>
+#include <stdio.h>
 
-#include <reap/definitions.h>
+#include <reap/reap.h>
 
-const char *
-reapErrorString(int value)
+#include "internal.h"
+
+static _Thread_local char errorBuffer[REAP_ERROR_BUFFER_SIZE] = {0};
+
+void
+emitError(const char *format, ...)
 {
-    if (value < 0) {
-        return strerror(-1 * value);
-    }
+    va_list args;
 
-    switch (value) {
-    case REAP_RET_OK: return "No error";
-    case REAP_RET_BAD_USAGE: return "Invalid API usage";
-    case REAP_RET_OUT_OF_MEMORY: return "Failed to allocate memory";
-    case REAP_RET_NOT_FOUND: return "Could not find a resource";
-    case REAP_RET_FILE_READ: return "Failed to read from a file";
-    case REAP_RET_OTHER: return "An unanticpated error occurred";
-    default: return "Invalid return value";
-    }
+    va_start(args, format);
+    vsnprintf(errorBuffer, sizeof(errorBuffer), format, args);
+    va_end(args);
+}
+
+char *
+reapGetError(void)
+{
+    return errorBuffer;
 }
