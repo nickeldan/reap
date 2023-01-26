@@ -9,13 +9,12 @@
 #ifndef REAP_DEFINITIONS_H
 #define REAP_DEFINITIONS_H
 
-#include <sys/types.h>
-#include <unistd.h>
+#include "config.h"
 
 /**
  * @brief REAP's version.
  */
-#define REAP_VERSION "0.9.1"
+#define REAP_VERSION "1.0.0"
 
 /**
  * @brief Return values.
@@ -31,20 +30,6 @@ enum reapRetValue {
 };
 
 /**
- * @brief Converts an error code to a string.
- *
- * @param value The error code.
- *
- * @return      A string describing the error.
- */
-const char *
-reapErrorString(int value)
-#ifdef __GNUC__
-    __attribute__((const))
-#endif
-    ;
-
-/**
  * @brief   Acquires the thread-local buffer holding the last error message.
  *
  * @return  A pointer to the thread-local buffer.
@@ -55,31 +40,5 @@ reapGetError(void)
     __attribute__((pure))
 #endif
     ;
-
-/**
- * @brief Information concerning a running process.
- */
-typedef struct reapProcInfo {
-    pid_t pid;  /**< Process ID.*/
-    pid_t ppid; /**< Parent process ID.*/
-    pid_t tid;  /**< Task ID.*/
-    uid_t uid;  /**< ID of the user running the process.*/
-    uid_t euid; /**< Effective user ID running the process.*/
-    gid_t gid;  /**< Group ID of the user running the process.*/
-    gid_t egid; /**< Effective group ID running the process.*/
-} reapProcInfo;
-
-/**
- * @brief Gets information about a running process.
- *
- * @param pid               The PID of a running process.
- * @param[out] info         A pointer to the structure to be populated.
- * @param[out] exe_path     If not NULL, then will be populated by the path to the process' executable.
- * @param path_size         The size of exe_path.
- *
- * @return                  REAP_RET_OK if successful and an error code otherwise.
- */
-int
-reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size);
 
 #endif  // REAP_DEFINITIONS_H

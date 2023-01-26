@@ -10,6 +10,8 @@
 #ifndef REAP_ITERATE_FD_H
 #define REAP_ITERATE_FD_H
 
+#include <sys/types.h>
+
 #include "definitions.h"
 
 /**
