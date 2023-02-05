@@ -3,4 +3,3 @@
 *.a
 deps.mk
 .vscode
-docs

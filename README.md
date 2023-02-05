@@ -34,9 +34,9 @@ typedef struct reapProcInfo {
 } reapProcInfo;
 ```
 
-`reapGetProcInfo` returns `REAP_RET_OK` if successful and an error code otherwise (defined in [reap/definitions.h](include/reap/definitions.h)).
+`reapGetProcInfo` returns `REAP_RET_OK` if successful and an error code otherwise (defined in [reap/definitions.h](include/reap/definitions.h)).  In addition to the error codes defined in that file, various REAP functions can return negative values.  Such values will be equal to `-1 * errno`.
 
-You can also pass a thread ID (i.e., a value returned by the `gettid` system call) as `pid`.
+You can also pass a task ID (i.e., a value returned by the `gettid` system call) as `pid`.
 
 If `exe_path` is not `NULL` and is of size `path_size`, then it will be populated with the path to the process' executable.
 
