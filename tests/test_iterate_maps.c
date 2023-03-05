@@ -21,7 +21,7 @@ iterateMaps(void)
     char name[PATH_MAX];
 
     if (stat("/proc/self/exe", &fs) != 0) {
-        SCR_ERROR("stat (/proc/self/exe): %s", strerror(errno));
+        SCR_FAIL("stat (/proc/self/exe): %s", strerror(errno));
     }
 
     SCR_ASSERT_EQ(reapMapIteratorCreate(getpid(), &iterator), REAP_RET_OK);
@@ -44,8 +44,8 @@ iterateMaps(void)
     }
 
     if (ret != REAP_RET_DONE) {
-        SCR_ERROR("reapMapIteratorNext: %s", reapGetError());
+        SCR_FAIL("reapMapIteratorNext: %s", reapGetError());
     }
 
-    SCR_ERROR("Couldn't find self mapped into virtual memory");
+    SCR_FAIL("Couldn't find self mapped into virtual memory");
 }

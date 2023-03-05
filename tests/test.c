@@ -60,42 +60,38 @@ iterateMaps(void);
 int
 main()
 {
-    int ret;
-    scrRunner *runner;
     scrGroup *group;
 
-    runner = scrRunnerCreate();
+    scrInit();
 
-    group = scrGroupCreate(runner, procSetup, procCleanup);
+    group = scrGroupCreate(procSetup, procCleanup);
     scrGroupAddTest(group, "Get proc info", findSelf, 0, 0);
     scrGroupAddTest(group, "Get self path", getSelfPath, 0, 0);
     scrGroupAddTest(group, "Proc iterator", iterateProcs, 5, 0);
 
-    group = scrGroupCreate(runner, fdSetup, fdCleanup);
+    group = scrGroupCreate(fdSetup, fdCleanup);
     scrGroupAddTest(group, "File descriptor iterator", iterateFds, 5, 0);
 
-    group = scrGroupCreate(runner, ipv4TcpServerSetup, serverCleanup);
+    group = scrGroupCreate(ipv4TcpServerSetup, serverCleanup);
     scrGroupAddTest(group, "Net iterator find IPv4 TCP server", ipv4TcpFindServer, 5, 0);
     scrGroupAddTest(group, "Net iterator find IPv4 TCP client", ipv4TcpFindClient, 5, 0);
 
-    group = scrGroupCreate(runner, ipv6TcpServerSetup, serverCleanup);
+    group = scrGroupCreate(ipv6TcpServerSetup, serverCleanup);
     scrGroupAddTest(group, "Net iterator find IPv6 TCP server", ipv6TcpFindServer, 5, 0);
     scrGroupAddTest(group, "Net iterator find IPv6 TCP client", ipv6TcpFindClient, 5, 0);
 
-    group = scrGroupCreate(runner, ipv4UdpServerSetup, serverCleanup);
+    group = scrGroupCreate(ipv4UdpServerSetup, serverCleanup);
     scrGroupAddTest(group, "Net iterator find IPv4 UDP server", ipv4UdpFindServer, 5, 0);
 
-    group = scrGroupCreate(runner, ipv6UdpServerSetup, serverCleanup);
+    group = scrGroupCreate(ipv6UdpServerSetup, serverCleanup);
     scrGroupAddTest(group, "Net iterator find IPv6 UDP server", ipv6UdpFindServer, 5, 0);
 
-    group = scrGroupCreate(runner, domainServerSetup, domainServerCleanup);
+    group = scrGroupCreate(domainServerSetup, domainServerCleanup);
     scrGroupAddTest(group, "Domain socket iterator find server", domainFindServer, 5, 0);
 
-    group = scrGroupCreate(runner, NULL, NULL);
+    group = scrGroupCreate(NULL, NULL);
     scrGroupAddTest(group, "Thread iterator", iterateThreads, 5, 0);
     scrGroupAddTest(group, "Map iterator", iterateMaps, 5, 0);
 
-    ret = scrRunnerRun(runner, NULL, NULL);
-    scrRunnerDestroy(runner);
-    return ret;
+    return scrRun(NULL, NULL);
 }

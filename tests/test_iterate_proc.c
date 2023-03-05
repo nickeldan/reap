@@ -19,7 +19,7 @@ procSetup(void *global_ctx)
     SCR_ASSERT_PTR_NEQ((path = malloc(PATH_MAX)), NULL);
 
     if (readlink("/proc/self/exe", path, PATH_MAX) < 0) {
-        SCR_ERROR("readlink (/proc/self/exe): %s", strerror(errno));
+        SCR_FAIL("readlink (/proc/self/exe): %s", strerror(errno));
     }
 
     return path;
@@ -39,7 +39,7 @@ findSelf(void)
 
     pid = getpid();
     if (reapGetProcInfo(pid, &info, NULL, 0) != REAP_RET_OK) {
-        SCR_ERROR("reapGetProcInfo: %s", reapGetError());
+        SCR_FAIL("reapGetProcInfo: %s", reapGetError());
     }
 
     SCR_ASSERT_EQ(info.pid, pid);
@@ -60,7 +60,7 @@ getSelfPath(void)
 
     pid = getpid();
     if (reapGetProcInfo(pid, &info, path, sizeof(path)) != REAP_RET_OK) {
-        SCR_ERROR("reapGetProcInfo: %s", reapGetError());
+        SCR_FAIL("reapGetProcInfo: %s", reapGetError());
     }
 
     SCR_ASSERT_STR_EQ(path, SCR_GROUP_CTX());
@@ -78,7 +78,7 @@ iterateProcs(void)
     pid = getpid();
 
     if (reapProcIteratorCreate(&iterator) != REAP_RET_OK) {
-        SCR_ERROR("reapProcIteratorCreate: %s", reapGetError());
+        SCR_FAIL("reapProcIteratorCreate: %s", reapGetError());
     }
 
     while ((ret = reapProcIteratorNext(iterator, &info, path, sizeof(path))) == REAP_RET_OK) {
@@ -92,8 +92,8 @@ iterateProcs(void)
     }
 
     if (ret != REAP_RET_DONE) {
-        SCR_ERROR("reapProcIteratorNext: %s", reapGetError());
+        SCR_FAIL("reapProcIteratorNext: %s", reapGetError());
     }
 
-    SCR_ERROR("Could not find process %li", (long)pid);
+    SCR_FAIL("Could not find process %li", (long)pid);
 }

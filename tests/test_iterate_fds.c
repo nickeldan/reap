@@ -24,7 +24,7 @@ fdSetup(void *global_ctx)
     snprintf(template, 25, "/tmp/reap_test_XXXXXX");
     fd = mkstemp(template);
     if (fd < 0) {
-        SCR_ERROR("mkstemp: %s", strerror(errno));
+        SCR_FAIL("mkstemp: %s", strerror(errno));
     }
     close(fd);
     return template;
@@ -50,11 +50,11 @@ iterateFds(void)
     tmp_file = SCR_GROUP_CTX();
     fd = open(tmp_file, O_RDONLY);
     if (fd < 0) {
-        SCR_ERROR("open (%s): %s", tmp_file, strerror(errno));
+        SCR_FAIL("open (%s): %s", tmp_file, strerror(errno));
     }
 
     if (fstat(fd, &fs) != 0) {
-        SCR_ERROR("fstat: %s", strerror(errno));
+        SCR_FAIL("fstat: %s", strerror(errno));
     }
 
     SCR_ASSERT_EQ(reapFdIteratorCreate(getpid(), &iterator), REAP_RET_OK);
@@ -74,8 +74,8 @@ iterateFds(void)
     }
 
     if (ret != REAP_RET_DONE) {
-        SCR_ERROR("reapFdIteratorNext: %s", reapGetError());
+        SCR_FAIL("reapFdIteratorNext: %s", reapGetError());
     }
 
-    SCR_ERROR("Could not find file descriptor %i", fd);
+    SCR_FAIL("Could not find file descriptor %i", fd);
 }
