@@ -29,17 +29,17 @@ domainServerSetup(void *global_ctx)
 
     args->listener = socket(AF_LOCAL, SOCK_STREAM, 0);
     if (args->listener < 0) {
-        SCR_ERROR("socket: %s", strerror(errno));
+        SCR_FAIL("socket: %s", strerror(errno));
     }
 
     snprintf(addr.sun_path, sizeof(addr.sun_path), "/tmp/reap_test_%li", (long)getpid());
     strncpy(args->path, addr.sun_path, sizeof(args->path));
     if (bind(args->listener, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-        SCR_ERROR("bind: %s", reapGetError());
+        SCR_FAIL("bind: %s", reapGetError());
     }
 
     if (listen(args->listener, 1) != 0) {
-        SCR_ERROR("listen (%s): %s", addr.sun_path, strerror(errno));
+        SCR_FAIL("listen (%s): %s", addr.sun_path, strerror(errno));
     }
 
     return args;
@@ -67,11 +67,11 @@ domainFindServer(void)
     args = SCR_GROUP_CTX();
 
     if (fstat(args->listener, &fs) != 0) {
-        SCR_ERROR("fstat: %s", strerror(errno));
+        SCR_FAIL("fstat: %s", strerror(errno));
     }
 
     if (reapNetIteratorCreate(REAP_NET_FLAG_DOMAIN, &iterator) != REAP_RET_OK) {
-        SCR_ERROR("reapNetIteratorCreate: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorCreate: %s", reapGetError());
     }
 
     while ((ret = reapNetIteratorNext(iterator, &result)) == REAP_RET_OK) {
@@ -88,8 +88,8 @@ domainFindServer(void)
     }
 
     if (ret != REAP_RET_DONE) {
-        SCR_ERROR("reapNetIteratorNext: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorNext: %s", reapGetError());
     }
 
-    SCR_ERROR("Could not find entry for server");
+    SCR_FAIL("Could not find entry for server");
 }

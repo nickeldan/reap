@@ -45,13 +45,13 @@ iterateThreads(void)
     reapThreadIterator *iterator;
 
     if (sem_init(&args.sem, 0, 0) != 0) {
-        SCR_ERROR("sem_init: %s", strerror(errno));
+        SCR_FAIL("sem_init: %s", strerror(errno));
     }
     pthread_mutex_lock(&args.lock);
 
     ret = pthread_create(&thread, NULL, threadFunc, &args);
     if (ret != 0) {
-        SCR_ERROR("pthread_create: %s", strerror(ret));
+        SCR_FAIL("pthread_create: %s", strerror(ret));
     }
     sem_wait(&args.sem);
     sem_destroy(&args.sem);
@@ -62,7 +62,7 @@ iterateThreads(void)
     SCR_LOG("Thread = %li", (long)args.tid);
 
     if (reapThreadIteratorCreate(pid, &iterator) != REAP_RET_OK) {
-        SCR_ERROR("reapThreadIteratorCreate: %s", reapGetError());
+        SCR_FAIL("reapThreadIteratorCreate: %s", reapGetError());
     }
 
     while ((ret = reapThreadIteratorNext(iterator, &tval)) == REAP_RET_OK) {
@@ -76,7 +76,7 @@ iterateThreads(void)
             found_thread = true;
 
             if (reapGetProcInfo(tval, &info, NULL, 0) != REAP_RET_OK) {
-                SCR_ERROR("reapGetProcInfo: %s", reapGetError());
+                SCR_FAIL("reapGetProcInfo: %s", reapGetError());
             }
             SCR_ASSERT_EQ(info.pid, pid);
             SCR_ASSERT_EQ(info.tid, tval);
@@ -88,14 +88,14 @@ iterateThreads(void)
     pthread_join(thread, NULL);
 
     if (ret != REAP_RET_DONE) {
-        SCR_ERROR("reapThreadIteratorNext: %s", reapGetError());
+        SCR_FAIL("reapThreadIteratorNext: %s", reapGetError());
     }
 
     if (!found_self) {
-        SCR_ERROR("Did not find own TID");
+        SCR_FAIL("Did not find own TID");
     }
 
     if (!found_thread) {
-        SCR_ERROR("Did not find TID of side thread");
+        SCR_FAIL("Did not find TID of side thread");
     }
 }

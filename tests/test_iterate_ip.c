@@ -32,11 +32,11 @@ bindServer(int listener, const struct sockaddr *addr, socklen_t slen, bool tcp)
     int dummy = 1;
 
     if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &dummy, sizeof(dummy)) < 0) {
-        SCR_ERROR("setsockopt (SO_REUSEADDR): %s", strerror(errno));
+        SCR_FAIL("setsockopt (SO_REUSEADDR): %s", strerror(errno));
     }
 
     if (setsockopt(listener, SOL_SOCKET, SO_REUSEPORT, &dummy, sizeof(dummy)) < 0) {
-        SCR_ERROR("setsockopt (SO_REUSEPORT): %s", strerror(errno));
+        SCR_FAIL("setsockopt (SO_REUSEPORT): %s", strerror(errno));
     }
 
     if (bind(listener, addr, slen) != 0) {
@@ -47,7 +47,7 @@ bindServer(int listener, const struct sockaddr *addr, socklen_t slen, bool tcp)
             SCR_TEST_SKIP();
         }
 
-        SCR_ERROR("bind: %s", strerror(local_errno));
+        SCR_FAIL("bind: %s", strerror(local_errno));
     }
 
     if (tcp && listen(listener, 1) != 0) {
@@ -55,7 +55,7 @@ bindServer(int listener, const struct sockaddr *addr, socklen_t slen, bool tcp)
 
         shutdown(listener, SHUT_RDWR);
         close(listener);
-        SCR_ERROR("listen: %s", strerror(local_errno));
+        SCR_FAIL("listen: %s", strerror(local_errno));
     }
 }
 
@@ -70,7 +70,7 @@ ipv4ServerSetup(int type)
 
     listener = socket(AF_INET, type, 0);
     if (listener < 0) {
-        SCR_ERROR("socket: %s", strerror(errno));
+        SCR_FAIL("socket: %s", strerror(errno));
     }
 
     bindServer(listener, (struct sockaddr *)&addr, sizeof(addr), type == SOCK_STREAM);
@@ -88,7 +88,7 @@ ipv6ServerSetup(int type)
 
     listener = socket(AF_INET6, type, 0);
     if (listener < 0) {
-        SCR_ERROR("socket: %s", strerror(errno));
+        SCR_FAIL("socket: %s", strerror(errno));
     }
 
     bindServer(listener, (struct sockaddr *)&addr, sizeof(addr), type == SOCK_STREAM);
@@ -108,11 +108,11 @@ ipv4FindServer(bool udp)
     listener = (intptr_t)SCR_GROUP_CTX();
 
     if (fstat(listener, &fs) != 0) {
-        SCR_ERROR("fstat: %s", strerror(errno));
+        SCR_FAIL("fstat: %s", strerror(errno));
     }
 
     if (reapNetIteratorCreate(flags, &iterator) != REAP_RET_OK) {
-        SCR_ERROR("reapNetIteratorCreate: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorCreate: %s", reapGetError());
     }
 
     while ((ret = reapNetIteratorNext(iterator, &result)) == REAP_RET_OK) {
@@ -131,10 +131,10 @@ ipv4FindServer(bool udp)
     }
 
     if (ret != REAP_RET_DONE) {
-        SCR_ERROR("reapNetIteratorNext: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorNext: %s", reapGetError());
     }
 
-    SCR_ERROR("Could not find entry for server");
+    SCR_FAIL("Could not find entry for server");
 }
 
 static void
@@ -149,11 +149,11 @@ ipv6FindServer(bool udp)
     listener = (intptr_t)SCR_GROUP_CTX();
 
     if (fstat(listener, &fs) != 0) {
-        SCR_ERROR("fstat: %s", strerror(errno));
+        SCR_FAIL("fstat: %s", strerror(errno));
     }
 
     if (reapNetIteratorCreate(flags, &iterator) != REAP_RET_OK) {
-        SCR_ERROR("reapNetIteratorCreate: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorCreate: %s", reapGetError());
     }
 
     while ((ret = reapNetIteratorNext(iterator, &result)) == REAP_RET_OK) {
@@ -173,10 +173,10 @@ ipv6FindServer(bool udp)
     }
 
     if (ret != REAP_RET_DONE) {
-        SCR_ERROR("reapNetIteratorNext: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorNext: %s", reapGetError());
     }
 
-    SCR_ERROR("Could not find entry for server");
+    SCR_FAIL("Could not find entry for server");
 }
 
 static void *
@@ -189,7 +189,7 @@ serverFunc(void *opaque)
 
     peer = accept(args->listener, (struct sockaddr *)&addr, &slen);
     if (peer < 0) {
-        SCR_ERROR("accept: %s", strerror(errno));
+        SCR_FAIL("accept: %s", strerror(errno));
     }
 
     sem_wait(&args->sem);
@@ -258,32 +258,32 @@ ipv4TcpFindClient(void)
 
     client = socket(AF_INET, SOCK_STREAM, 0);
     if (client < 0) {
-        SCR_ERROR("socket: %s", strerror(errno));
+        SCR_FAIL("socket: %s", strerror(errno));
     }
 
     if (fstat(client, &fs) != 0) {
-        SCR_ERROR("fstat: %s", strerror(errno));
+        SCR_FAIL("fstat: %s", strerror(errno));
     }
 
     args.listener = (intptr_t)SCR_GROUP_CTX();
     if (sem_init(&args.sem, 0, 0) != 0) {
-        SCR_ERROR("sem_init: %s", strerror(errno));
+        SCR_FAIL("sem_init: %s", strerror(errno));
     }
 
     ret = pthread_create(&thread, NULL, serverFunc, &args);
     if (ret != 0) {
-        SCR_ERROR("pthread_create: %s", strerror(ret));
+        SCR_FAIL("pthread_create: %s", strerror(ret));
     }
 
     addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
     addr.sin_port = htons(PORT);
 
     if (connect(client, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-        SCR_ERROR("connect: %s", strerror(errno));
+        SCR_FAIL("connect: %s", strerror(errno));
     }
 
     if (reapNetIteratorCreate(0, &iterator) != REAP_RET_OK) {
-        SCR_ERROR("reapNetIteratorCreate: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorCreate: %s", reapGetError());
     }
 
     while ((ret = reapNetIteratorNext(iterator, &result)) == REAP_RET_OK) {
@@ -303,10 +303,10 @@ ipv4TcpFindClient(void)
     }
 
     if (ret != REAP_RET_DONE) {
-        SCR_ERROR("reapNetIteratorNext: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorNext: %s", reapGetError());
     }
 
-    SCR_ERROR("Could not find entry for client");
+    SCR_FAIL("Could not find entry for client");
 }
 
 void
@@ -328,31 +328,31 @@ ipv6TcpFindClient(void)
 
     client = socket(AF_INET6, SOCK_STREAM, 0);
     if (client < 0) {
-        SCR_ERROR("socket: %s", strerror(errno));
+        SCR_FAIL("socket: %s", strerror(errno));
     }
 
     if (fstat(client, &fs) != 0) {
-        SCR_ERROR("fstat: %s", strerror(errno));
+        SCR_FAIL("fstat: %s", strerror(errno));
     }
 
     args.listener = (intptr_t)SCR_GROUP_CTX();
     if (sem_init(&args.sem, 0, 0) != 0) {
-        SCR_ERROR("sem_init: %s", strerror(errno));
+        SCR_FAIL("sem_init: %s", strerror(errno));
     }
 
     ret = pthread_create(&thread, NULL, serverFunc, &args);
     if (ret != 0) {
-        SCR_ERROR("pthread_create: %s", strerror(ret));
+        SCR_FAIL("pthread_create: %s", strerror(ret));
     }
 
     addr.sin6_port = htons(PORT);
 
     if (connect(client, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-        SCR_ERROR("connect: %s", strerror(errno));
+        SCR_FAIL("connect: %s", strerror(errno));
     }
 
     if (reapNetIteratorCreate(REAP_NET_FLAG_IPV6, &iterator) != REAP_RET_OK) {
-        SCR_ERROR("reapNetIteratorCreate: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorCreate: %s", reapGetError());
     }
 
     while ((ret = reapNetIteratorNext(iterator, &result)) == REAP_RET_OK) {
@@ -372,10 +372,10 @@ ipv6TcpFindClient(void)
     }
 
     if (ret != REAP_RET_DONE) {
-        SCR_ERROR("reapNetIteratorNext: %s", reapGetError());
+        SCR_FAIL("reapNetIteratorNext: %s", reapGetError());
     }
 
-    SCR_ERROR("Could not find entry for client");
+    SCR_FAIL("Could not find entry for client");
 }
 
 void
