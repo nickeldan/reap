@@ -300,7 +300,7 @@ make.mk defines the variables `REAP_SHARED_LIBRARY` and `REAP_STATIC_LIBRARY` wh
 Testing
 =======
 
-Testing can be performed through the [Scrutiny framework](https://github.com/nickeldan/scrutiny).  After installing at least version 0.4.0 of the framework, you can run REAP's tests by
+Testing can be performed through the [Scrutiny framework](https://github.com/nickeldan/scrutiny).  After installing at least version 0.5.0 of the framework, you can run REAP's tests by
 
 ```sh
 make tests
