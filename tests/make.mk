@@ -1,5 +1,5 @@
 TEST_SOURCE_FILES := $(wildcard $(TEST_DIR)/*.c)
-TEST_BINARY := $(TEST_DIR)/test
+TEST_BINARY := $(TEST_DIR)/tests
 
 .PHONY: tests
 
