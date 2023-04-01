@@ -62,8 +62,6 @@ main()
 {
     scrGroup *group;
 
-    scrInit();
-
     group = scrGroupCreate(procSetup, procCleanup);
     scrGroupAddTest(group, "Get proc info", findSelf, 0, 0);
     scrGroupAddTest(group, "Get self path", getSelfPath, 0, 0);
