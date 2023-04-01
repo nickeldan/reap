@@ -60,12 +60,12 @@ nextUnix(const reapNetIterator *iterator, reapNetResult *result)
         path[0] = '\0';
         if (sscanf(line, "%*s %*s %*s %*s %i %u %lu %s", &result->socket_type, &state, &inode_long, path) <
             3) {
-            EMIT_ERROR("Invalid line in /proc/net/unix: %s", stripLine(line));
+            emitError("Invalid line in /proc/net/unix: %s", stripLine(line));
             return REAP_RET_OTHER;
         }
 
         if (state > SS_DISCONNECTING) {
-            EMIT_ERROR("Invalid socket state in /proc/net/unix: %u", state);
+            emitError("Invalid socket state in /proc/net/unix: %u", state);
             return REAP_RET_OTHER;
         }
 
@@ -81,7 +81,7 @@ nextUnix(const reapNetIterator *iterator, reapNetResult *result)
     }
 
     if (ferror(iterator->file)) {
-        EMIT_ERROR("Failed to read from /proc/net/unix");
+        emitError("Failed to read from /proc/net/unix");
         return REAP_RET_FILE_READ;
     }
 
@@ -140,13 +140,13 @@ reapNetIteratorCreate(unsigned int flags, reapNetIterator **iterator)
     char buffer[20], line[256];
 
     if (!iterator) {
-        EMIT_ERROR("The pointer cannot be NULL");
+        emitError("The pointer cannot be NULL");
         return REAP_RET_BAD_USAGE;
     }
 
     *iterator = malloc(sizeof(**iterator));
     if (!*iterator) {
-        EMIT_ERROR("Failed to allocate %zu bytes", sizeof(**iterator));
+        emitError("Failed to allocate %zu bytes", sizeof(**iterator));
         return REAP_RET_OUT_OF_MEMORY;
     }
 
@@ -155,13 +155,13 @@ reapNetIteratorCreate(unsigned int flags, reapNetIterator **iterator)
     if (!(*iterator)->file) {
         int local_errno = errno;
 
-        EMIT_ERROR("Failed to open %s: %s", buffer, strerror(local_errno));
+        emitError("Failed to open %s: %s", buffer, strerror(local_errno));
         free(*iterator);
         return -1 * local_errno;
     }
 
     if (!fgets(line, sizeof(line), (*iterator)->file)) {
-        EMIT_ERROR("Failed to read from %s", buffer);
+        emitError("Failed to read from %s", buffer);
         reapNetIteratorDestroy(*iterator);
         return REAP_RET_FILE_READ;
     }
@@ -186,10 +186,10 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
 
     if (!iterator || !iterator->file || !result) {
         if (!iterator) {
-            EMIT_ERROR("The iterator cannot be NULL");
+            emitError("The iterator cannot be NULL");
         }
         else {
-            EMIT_ERROR("The result cannot be NULL");
+            emitError("The result cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
@@ -204,7 +204,7 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
         if (ferror(iterator->file)) {
             char buffer[20];
 
-            EMIT_ERROR("Failed to read from %s", formFile(iterator, buffer, sizeof(buffer)));
+            emitError("Failed to read from %s", formFile(iterator, buffer, sizeof(buffer)));
             return REAP_RET_FILE_READ;
         }
         else {
@@ -216,7 +216,7 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
     if (ret == REAP_RET_OTHER) {
         char buffer[20];
 
-        EMIT_ERROR("Malformed line in %s: %s", formFile(iterator, buffer, sizeof(buffer)), stripLine(line));
+        emitError("Malformed line in %s: %s", formFile(iterator, buffer, sizeof(buffer)), stripLine(line));
     }
     return ret;
 }

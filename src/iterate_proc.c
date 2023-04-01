@@ -13,13 +13,13 @@ int
 reapProcIteratorCreate(reapProcIterator **iterator)
 {
     if (!iterator) {
-        EMIT_ERROR("The pointer cannot be NULL");
+        emitError("The pointer cannot be NULL");
         return REAP_RET_BAD_USAGE;
     }
 
     *iterator = malloc(sizeof(**iterator));
     if (!*iterator) {
-        EMIT_ERROR("Failed to allocate %zu bytes", sizeof(**iterator));
+        emitError("Failed to allocate %zu bytes", sizeof(**iterator));
         return REAP_RET_OUT_OF_MEMORY;
     }
 
@@ -27,7 +27,7 @@ reapProcIteratorCreate(reapProcIterator **iterator)
     if (!(*iterator)->dir) {
         int local_errno = errno;
 
-        EMIT_ERROR("opendir failed on /proc: %s", strerror(local_errno));
+        emitError("opendir failed on /proc: %s", strerror(local_errno));
         free(*iterator);
         return -1 * local_errno;
     }
@@ -49,10 +49,10 @@ reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info, char 
 {
     if (!iterator || !iterator->dir || !info) {
         if (!iterator) {
-            EMIT_ERROR("The iterator cannot be NULL");
+            emitError("The iterator cannot be NULL");
         }
         else {
-            EMIT_ERROR("The info cannot be NULL");
+            emitError("The info cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
@@ -72,7 +72,7 @@ reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info, char 
                 return REAP_RET_DONE;
             }
             else {
-                EMIT_ERROR("readdir failed: %s", strerror(local_errno));
+                emitError("readdir failed: %s", strerror(local_errno));
                 return -1 * local_errno;
             }
         }

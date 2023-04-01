@@ -11,19 +11,18 @@
 #define ARRAY_LENGTH(x) (sizeof(x) / sizeof((x)[0]))
 #endif
 
-void
-emitError(const char *format, ...)
 #ifdef __GNUC__
-    __attribute__((format(printf, 1, 2))) __attribute__((visibility("hidden")))
+#define REAP_FORMAT(pos) __attribute__((format(printf, pos, pos + 1)))
+#define REAP_HIDDEN      __attribute__((visibility("hidden")))
+#else
+#define REAP_FORMAT(pos)
+#define REAP_HIDDEN
 #endif
-    ;
-#define EMIT_ERROR(...) emitError(__VA_ARGS__)
+
+void
+emitError(const char *format, ...) REAP_FORMAT(1) REAP_HIDDEN;
 
 int
-betterReadlink(const char *pathname, char *buf, size_t bufsiz)
-#ifdef __GNUC__
-    __attribute__((visibility("hidden")))
-#endif
-    ;
+betterReadlink(const char *pathname, char *buf, size_t bufsiz) REAP_HIDDEN;
 
 #endif  // REAP_INTERNAL_H
