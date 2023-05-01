@@ -8,7 +8,7 @@
 static _Thread_local char errorBuffer[REAP_ERROR_BUFFER_SIZE] = {0};
 
 void
-emitError(const char *format, ...)
+reapEmitError(const char *format, ...)
 {
     va_list args;
 

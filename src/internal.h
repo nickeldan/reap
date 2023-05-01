@@ -20,9 +20,9 @@
 #endif
 
 void
-emitError(const char *format, ...) REAP_FORMAT(1) REAP_HIDDEN;
+reapEmitError(const char *format, ...) REAP_FORMAT(1) REAP_HIDDEN;
 
 int
-betterReadlink(const char *pathname, char *buf, size_t bufsiz) REAP_HIDDEN;
+reapBetterReadlink(const char *pathname, char *buf, size_t bufsiz) REAP_HIDDEN;
 
 #endif  // REAP_INTERNAL_H

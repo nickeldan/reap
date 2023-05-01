@@ -18,10 +18,10 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
 
     if (pid <= 0 || !info) {
         if (pid <= 0) {
-            emitError("The PID must be positive");
+            reapEmitError("The PID must be positive");
         }
         else {
-            emitError("The info cannot be NULL");
+            reapEmitError("The info cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
@@ -31,7 +31,7 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
     snprintf(prefix, sizeof(prefix), "/proc/%li", (long)pid);
     snprintf(buffer, sizeof(buffer), "%s/exe", prefix);
 
-    if (exe_path && path_size > 0 && betterReadlink(buffer, exe_path, path_size) == -1) {
+    if (exe_path && path_size > 0 && reapBetterReadlink(buffer, exe_path, path_size) == -1) {
         int local_errno = errno;
 
         if (local_errno == ENOENT) {
@@ -42,14 +42,14 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
             }
         }
 
-        emitError("readlink failed on %s: %s", buffer, strerror(local_errno));
+        reapEmitError("readlink failed on %s: %s", buffer, strerror(local_errno));
         return -1 * local_errno;
     }
 
     snprintf(buffer, sizeof(buffer), "%s/status", prefix);
     file = fopen(buffer, "r");
     if (!file) {
-        emitError("%s not found", buffer);
+        reapEmitError("%s not found", buffer);
         return REAP_RET_NOT_FOUND;
     }
 
@@ -83,8 +83,8 @@ reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
         }
     }
 
-    emitError("No %s line found in %s", found_gid ? found_uid ? found_tgid ? "PPid" : "Tgid" : "Uid" : "Gid",
-              buffer);
+    reapEmitError("No %s line found in %s",
+                  found_gid ? found_uid ? found_tgid ? "PPid" : "Tgid" : "Uid" : "Gid", buffer);
     ret = REAP_RET_OTHER;
 
 done:
