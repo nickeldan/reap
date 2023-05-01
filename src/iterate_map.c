@@ -7,6 +7,8 @@
 
 #include "internal.h"
 
+#ifndef REAP_NO_ITERATE_MAP
+
 struct reapMapIterator {
     FILE *file;
     pid_t pid;
@@ -132,3 +134,5 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char
 
     return REAP_RET_OK;
 }
+
+#endif  // REAP_NO_ITERATE_MAP

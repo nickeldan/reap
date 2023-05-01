@@ -1,3 +1,7 @@
+1.0.1:
+    - Added namespacing to hidden functions.
+    - Added feature flags.
+
 1.0.0:
     - Made the iterator types opaque.
     - reapGetError is always defined.

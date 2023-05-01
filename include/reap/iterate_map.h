@@ -13,6 +13,8 @@
 
 #include "definitions.h"
 
+#ifndef REAP_NO_ITERATE_MAP
+
 /**
  * @brief Iterates over all line in a /proc/<PID>/maps file.
  */
@@ -62,5 +64,7 @@ reapMapIteratorDestroy(reapMapIterator *iterator);
  */
 int
 reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char *name, size_t name_size);
+
+#endif  // REAP_NO_ITERATE_MAP
 
 #endif  // REAP_ITERATE_MAP_H

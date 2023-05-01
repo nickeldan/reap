@@ -14,17 +14,7 @@
 
 #include "definitions.h"
 
-/**
- * @brief   Acquires the thread-local buffer holding the last error message.
- *
- * @return  A pointer to the thread-local buffer.
- */
-char *
-reapGetError(void)
-#ifdef __GNUC__
-    __attribute__((pure))
-#endif
-    ;
+#ifndef REAP_NO_PROC
 
 /**
  * @brief Information concerning a running process/thread.
@@ -51,5 +41,7 @@ typedef struct reapProcInfo {
  */
 int
 reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size);
+
+#endif  // REAP_NO_PROC
 
 #endif  // REAP_PROC_H

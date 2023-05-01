@@ -109,9 +109,6 @@ typedef struct <a class="el" href="structreapProcInfo.html">reapProcInfo</a>&#16
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:add4a8e1a68e37d75111801aaafc571ba"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="proc_8h.html#add4a8e1a68e37d75111801aaafc571ba">reapGetError</a> (void)</td></tr>
-<tr class="memdesc:add4a8e1a68e37d75111801aaafc571ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Acquires the thread-local buffer holding the last error message.  <a href="proc_8h.html#add4a8e1a68e37d75111801aaafc571ba">More...</a><br /></td></tr>
-<tr class="separator:add4a8e1a68e37d75111801aaafc571ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dd4b635df0ee05a4202a473fbcddcae"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="proc_8h.html#a6dd4b635df0ee05a4202a473fbcddcae">reapGetProcInfo</a> (pid_t pid, <a class="el" href="structreapProcInfo.html">reapProcInfo</a> *info, char *exe_path, size_t path_size)</td></tr>
 <tr class="memdesc:a6dd4b635df0ee05a4202a473fbcddcae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets information about a running process/thread.  <a href="proc_8h.html#a6dd4b635df0ee05a4202a473fbcddcae">More...</a><br /></td></tr>
 <tr class="separator:a6dd4b635df0ee05a4202a473fbcddcae"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,27 +118,6 @@ Functions</h2></td></tr>
 <dl class="section author"><dt>Author</dt><dd>Daniel Walker</dd></dl>
 <dl class="section copyright"><dt>Copyright</dt><dd>Copyright (c) 2023 </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="add4a8e1a68e37d75111801aaafc571ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add4a8e1a68e37d75111801aaafc571ba">&#9670;&nbsp;</a></span>reapGetError()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char* reapGetError </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Acquires the thread-local buffer holding the last error message. </p>
-<dl class="section return"><dt>Returns</dt><dd>A pointer to the thread-local buffer. </dd></dl>
-
-</div>
-</div>
 <a id="a6dd4b635df0ee05a4202a473fbcddcae"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6dd4b635df0ee05a4202a473fbcddcae">&#9670;&nbsp;</a></span>reapGetProcInfo()</h2>
 

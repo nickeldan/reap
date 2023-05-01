@@ -297,6 +297,18 @@ The `CLEAN_TARGETS` variable should be added to `.PHONY` if you're using GNU mak
 
 make.mk defines the variables `REAP_SHARED_LIBRARY` and `REAP_STATIC_LIBRARY` which contain the paths of the specified libraries.
 
+Feature flags
+-------------
+
+By defining various preprocessor variables, you can disable some of REAP's features at compile time.  The available options are
+
+* `REAP_NO_PROC` (sets `REAP_NO_ITERATE_PROC` as well)
+* `REAP_NO_ITERATE_PROC`
+* `REAP_NO_ITERATE_FD`
+* `REAP_NO_ITERATE_MAP`
+* `REAP_NO_ITERATE_NET`
+* `REAP_NO_ITERATE_THREAD`
+
 Testing
 =======
 

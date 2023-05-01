@@ -8,6 +8,8 @@
 
 #include "internal.h"
 
+#ifndef REAP_NO_ITERATE_NET
+
 struct reapNetIterator {
     FILE *file;
     unsigned int flags;
@@ -221,3 +223,5 @@ reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result)
     }
     return ret;
 }
+
+#endif  // REAP_NO_ITERATE_NET

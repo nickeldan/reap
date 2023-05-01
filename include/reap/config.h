@@ -16,4 +16,10 @@
 #define REAP_ERROR_BUFFER_SIZE 256
 #endif
 
+#ifdef REAP_NO_PROC
+#ifndef REAP_NO_ITERATE_PROC
+#define REAP_NO_ITERATE_PROC
+#endif
+#endif
+
 #endif  // REAP_CONFIG_H
