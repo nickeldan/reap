@@ -16,6 +16,8 @@
 
 #include "definitions.h"
 
+#ifndef REAP_NO_ITERATE_NET
+
 #ifndef IPV4_SIZE
 /**
  * @brief The size of an IPv4 address.
@@ -99,5 +101,7 @@ reapNetIteratorDestroy(reapNetIterator *iterator);
  */
 int
 reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result);
+
+#endif  // REAP_NO_ITERATE_NET
 
 #endif  // REAP_ITERATE_NET_H

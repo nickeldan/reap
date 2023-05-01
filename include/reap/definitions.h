@@ -14,7 +14,7 @@
 /**
  * @brief REAP's version.
  */
-#define REAP_VERSION "1.0.0"
+#define REAP_VERSION "1.0.1"
 
 /**
  * @brief Return values.

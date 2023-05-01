@@ -14,6 +14,8 @@
 
 #include "definitions.h"
 
+#ifndef REAP_NO_ITERATE_FD
+
 /**
  * @brief Iterates over all open file descriptors of a process.
  */
@@ -61,5 +63,7 @@ reapFdIteratorDestroy(reapFdIterator *iterator);
  */
 int
 reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result, char *file, size_t file_size);
+
+#endif  // REAP_NO_ITERATE_FD
 
 #endif  // REAP_ITERATE_FD_H

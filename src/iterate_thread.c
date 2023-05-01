@@ -7,6 +7,8 @@
 
 #include "internal.h"
 
+#ifndef REAP_NO_ITERATE_THREAD
+
 struct reapThreadIterator {
     DIR *dir;
     pid_t pid;
@@ -106,3 +108,5 @@ reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread)
 
     return REAP_RET_OK;
 }
+
+#endif  // REAP_NO_ITERATE_THREAD

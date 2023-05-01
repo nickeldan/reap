@@ -3,7 +3,7 @@ var searchData=
   ['reapfditeratorcreate_83',['reapFdIteratorCreate',['../iterate__fd_8h.html#a92d869e6cb9c6ba473e390112b0e871a',1,'iterate_fd.h']]],
   ['reapfditeratordestroy_84',['reapFdIteratorDestroy',['../iterate__fd_8h.html#a2bac8377545acd226ab98f889e3ff0d7',1,'iterate_fd.h']]],
   ['reapfditeratornext_85',['reapFdIteratorNext',['../iterate__fd_8h.html#aebc5d2ed3a4501263a0356ddc1bbc24d',1,'iterate_fd.h']]],
-  ['reapgeterror_86',['reapGetError',['../definitions_8h.html#add4a8e1a68e37d75111801aaafc571ba',1,'reapGetError(void):&#160;definitions.h'],['../proc_8h.html#add4a8e1a68e37d75111801aaafc571ba',1,'reapGetError(void):&#160;proc.h']]],
+  ['reapgeterror_86',['reapGetError',['../definitions_8h.html#add4a8e1a68e37d75111801aaafc571ba',1,'definitions.h']]],
   ['reapgetprocinfo_87',['reapGetProcInfo',['../proc_8h.html#a6dd4b635df0ee05a4202a473fbcddcae',1,'proc.h']]],
   ['reapmapiteratorcreate_88',['reapMapIteratorCreate',['../iterate__map_8h.html#a66e03a0852bed71038ed8d746d0d9c8e',1,'iterate_map.h']]],
   ['reapmapiteratordestroy_89',['reapMapIteratorDestroy',['../iterate__map_8h.html#a091b60c47699c9025ee1cf9be2a45107',1,'iterate_map.h']]],
