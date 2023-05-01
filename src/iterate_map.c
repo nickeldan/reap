@@ -26,17 +26,17 @@ reapMapIteratorCreate(pid_t pid, reapMapIterator **iterator)
 
     if (pid <= 0 || !iterator) {
         if (pid <= 0) {
-            emitError("The PID must be positive");
+            reapEmitError("The PID must be positive");
         }
         else {
-            emitError("The pointer cannot be NULL");
+            reapEmitError("The pointer cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
 
     *iterator = malloc(sizeof(**iterator));
     if (!*iterator) {
-        emitError("Failed to allocate %zu bytes", sizeof(**iterator));
+        reapEmitError("Failed to allocate %zu bytes", sizeof(**iterator));
         return REAP_RET_OUT_OF_MEMORY;
     }
 
@@ -45,7 +45,7 @@ reapMapIteratorCreate(pid_t pid, reapMapIterator **iterator)
     if (!(*iterator)->file) {
         int local_errno = errno;
 
-        emitError("fopen failed to open %s: %s", buffer, strerror(local_errno));
+        reapEmitError("fopen failed to open %s: %s", buffer, strerror(local_errno));
         free(*iterator);
         return -1 * local_errno;
     }
@@ -73,10 +73,10 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char
 
     if (!iterator || !result) {
         if (!iterator) {
-            emitError("The iterator cannot be NULL");
+            reapEmitError("The iterator cannot be NULL");
         }
         else {
-            emitError("The result cannot be NULL");
+            reapEmitError("The result cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
@@ -85,7 +85,8 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char
         if (ferror(iterator->file)) {
             char error_buffer[30];
 
-            emitError("Failed to read from %s", formPath(iterator->pid, error_buffer, sizeof(error_buffer)));
+            reapEmitError("Failed to read from %s",
+                          formPath(iterator->pid, error_buffer, sizeof(error_buffer)));
             return REAP_RET_FILE_READ;
         }
         else {
@@ -102,8 +103,8 @@ reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char
         if (line[line_length - 1] == '\n') {
             line[line_length - 1] = '\0';
         }
-        emitError("Malformed line in %s: %s", formPath(iterator->pid, error_buffer, sizeof(error_buffer)),
-                  line);
+        reapEmitError("Malformed line in %s: %s", formPath(iterator->pid, error_buffer, sizeof(error_buffer)),
+                      line);
         return REAP_RET_OTHER;
     }
 

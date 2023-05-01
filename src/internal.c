@@ -4,7 +4,7 @@
 #include "internal.h"
 
 int
-betterReadlink(const char *pathname, char *buf, size_t bufsiz)
+reapBetterReadlink(const char *pathname, char *buf, size_t bufsiz)
 {
     int ret;
 

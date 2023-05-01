@@ -29,17 +29,17 @@ reapFdIteratorCreate(pid_t pid, reapFdIterator **iterator)
 
     if (pid <= 0 || !iterator) {
         if (pid <= 0) {
-            emitError("The PID must be positive");
+            reapEmitError("The PID must be positive");
         }
         else {
-            emitError("The pointer cannot be NULL");
+            reapEmitError("The pointer cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
 
     *iterator = malloc(sizeof(**iterator));
     if (!*iterator) {
-        emitError("Failed to allocate %zu bytes", sizeof(**iterator));
+        reapEmitError("Failed to allocate %zu bytes", sizeof(**iterator));
         return REAP_RET_OUT_OF_MEMORY;
     }
 
@@ -48,7 +48,7 @@ reapFdIteratorCreate(pid_t pid, reapFdIterator **iterator)
     if (!(*iterator)->dir) {
         int local_errno = errno;
 
-        emitError("opendir failed on %s: %s", buffer, strerror(local_errno));
+        reapEmitError("opendir failed on %s: %s", buffer, strerror(local_errno));
         free(*iterator);
         return -1 * local_errno;
     }
@@ -74,10 +74,10 @@ reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result, char *file, s
 
     if (!iterator || !result) {
         if (!iterator) {
-            emitError("The iterator cannot be NULL");
+            reapEmitError("The iterator cannot be NULL");
         }
         else {
-            emitError("The result cannot be NULL");
+            reapEmitError("The result cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
@@ -98,7 +98,7 @@ reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result, char *file, s
                     return REAP_RET_DONE;
                 }
                 else {
-                    emitError("readdir failed: %s", strerror(local_errno));
+                    reapEmitError("readdir failed: %s", strerror(local_errno));
                     return -1 * local_errno;
                 }
             }
@@ -106,12 +106,12 @@ reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result, char *file, s
 
         value = strtol(entry->d_name, &endptr, 10);
         if (*endptr != '\0' || value < 0 || (result->fd = value) != value) {
-            emitError("Invalid file in %s: %s", base_buffer, entry->d_name);
+            reapEmitError("Invalid file in %s: %s", base_buffer, entry->d_name);
             return REAP_RET_OTHER;
         }
 
         snprintf(buffer, sizeof(buffer), "%s/%i", base_buffer, result->fd);
-    } while (betterReadlink(buffer, path, sizeof(path)) == -1 || stat(buffer, &fs) != 0);
+    } while (reapBetterReadlink(buffer, path, sizeof(path)) == -1 || stat(buffer, &fs) != 0);
 
     result->device = fs.st_dev;
     result->inode = fs.st_ino;

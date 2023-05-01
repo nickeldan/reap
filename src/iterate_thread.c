@@ -26,17 +26,17 @@ reapThreadIteratorCreate(pid_t pid, reapThreadIterator **iterator)
 
     if (pid <= 0 || !iterator) {
         if (pid <= 0) {
-            emitError("The PID must be positive");
+            reapEmitError("The PID must be positive");
         }
         else {
-            emitError("The pointer cannot be NULL");
+            reapEmitError("The pointer cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
 
     *iterator = malloc(sizeof(**iterator));
     if (!*iterator) {
-        emitError("Failed to allocate %zu bytes", sizeof(**iterator));
+        reapEmitError("Failed to allocate %zu bytes", sizeof(**iterator));
         return REAP_RET_OUT_OF_MEMORY;
     }
 
@@ -45,7 +45,7 @@ reapThreadIteratorCreate(pid_t pid, reapThreadIterator **iterator)
     if (!(*iterator)->dir) {
         int local_errno = errno;
 
-        emitError("opendir failed on %s: %s", buffer, strerror(local_errno));
+        reapEmitError("opendir failed on %s: %s", buffer, strerror(local_errno));
         free(*iterator);
         return -1 * local_errno;
     }
@@ -71,10 +71,10 @@ reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread)
 
     if (!iterator || !thread) {
         if (!iterator) {
-            emitError("The iterator cannot be NULL");
+            reapEmitError("The iterator cannot be NULL");
         }
         else {
-            emitError("The result cannot be NULL");
+            reapEmitError("The result cannot be NULL");
         }
         return REAP_RET_BAD_USAGE;
     }
@@ -89,7 +89,7 @@ reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread)
                 return REAP_RET_DONE;
             }
             else {
-                emitError("readdir failed: %s", strerror(local_errno));
+                reapEmitError("readdir failed: %s", strerror(local_errno));
                 return -1 * local_errno;
             }
         }
@@ -99,8 +99,8 @@ reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread)
     if (*endptr != '\0' || value <= 0 || (*thread = value) != value) {
         char buffer[30];
 
-        emitError("Invalid file in %s: %s", formDirectory(iterator->pid, buffer, sizeof(buffer)),
-                  entry->d_name);
+        reapEmitError("Invalid file in %s: %s", formDirectory(iterator->pid, buffer, sizeof(buffer)),
+                      entry->d_name);
         return REAP_RET_OTHER;
     }
 
