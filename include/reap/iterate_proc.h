@@ -28,7 +28,7 @@ typedef struct reapProcIterator reapProcIterator;
  * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
-reapProcIteratorCreate(reapProcIterator **iterator);
+reapProcIteratorCreate(reapProcIterator **iterator) REAP_EXPORT;
 
 /**
  * @brief Destroys an iterator.
@@ -36,7 +36,7 @@ reapProcIteratorCreate(reapProcIterator **iterator);
  * @param iterator  A pointer to the iterator.
  */
 void
-reapProcIteratorDestroy(reapProcIterator *iterator);
+reapProcIteratorDestroy(reapProcIterator *iterator) REAP_EXPORT;
 
 /**
  * @brief Gets the next result.
@@ -50,7 +50,8 @@ reapProcIteratorDestroy(reapProcIterator *iterator);
  * and an error code otherwise.
  */
 int
-reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info, char *exe_path, size_t path_size);
+reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info, char *exe_path,
+                     size_t path_size) REAP_EXPORT;
 
 #endif  // REAP_NO_ITERATE_PROC
 

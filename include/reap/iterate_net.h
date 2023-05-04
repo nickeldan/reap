@@ -81,7 +81,7 @@ typedef struct reapNetResult {
  * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
-reapNetIteratorCreate(unsigned int flags, reapNetIterator **iterator);
+reapNetIteratorCreate(unsigned int flags, reapNetIterator **iterator) REAP_EXPORT;
 
 /**
  * @brief Destroys an iterator.
@@ -89,7 +89,7 @@ reapNetIteratorCreate(unsigned int flags, reapNetIterator **iterator);
  * @param iterator  A pointer to the iterator.
  */
 void
-reapNetIteratorDestroy(reapNetIterator *iterator);
+reapNetIteratorDestroy(reapNetIterator *iterator) REAP_EXPORT;
 
 /**
  * @brief Gets the next result.
@@ -100,7 +100,7 @@ reapNetIteratorDestroy(reapNetIterator *iterator);
  * error code otherwise.
  */
 int
-reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result);
+reapNetIteratorNext(const reapNetIterator *iterator, reapNetResult *result) REAP_EXPORT;
 
 #endif  // REAP_NO_ITERATE_NET
 

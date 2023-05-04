@@ -11,10 +11,16 @@
 
 #include "config.h"
 
+#if defined(__GNUC__) && !defined(REAP_NO_EXPORT)
+#define REAP_EXPORT __attribute__((visibility("default")))
+#else
+#define REAP_EXPORT
+#endif
+
 /**
  * @brief REAP's version.
  */
-#define REAP_VERSION "1.0.1"
+#define REAP_VERSION "1.0.2"
 
 /**
  * @brief Return values.
@@ -35,7 +41,7 @@ enum reapRetValue {
  * @return  A pointer to the thread-local buffer.
  */
 char *
-reapGetError(void)
+reapGetError(void) REAP_EXPORT
 #ifdef __GNUC__
     __attribute__((pure))
 #endif

@@ -27,7 +27,7 @@ typedef struct reapThreadIterator reapThreadIterator;
  * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
-reapThreadIteratorCreate(pid_t pid, reapThreadIterator **iterator);
+reapThreadIteratorCreate(pid_t pid, reapThreadIterator **iterator) REAP_EXPORT;
 
 /**
  * @brief Destroys an iterator.
@@ -35,7 +35,7 @@ reapThreadIteratorCreate(pid_t pid, reapThreadIterator **iterator);
  * @param iterator  A pointer to the iterator.
  */
 void
-reapThreadIteratorDestroy(reapThreadIterator *iterator);
+reapThreadIteratorDestroy(reapThreadIterator *iterator) REAP_EXPORT;
 
 /**
  * @brief Gets the next result.
@@ -47,7 +47,7 @@ reapThreadIteratorDestroy(reapThreadIterator *iterator);
  * error code otherwise.
  */
 int
-reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread);
+reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread) REAP_EXPORT;
 
 #endif  // REAP_NO_ITERATE_THREAD
 

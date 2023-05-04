@@ -40,7 +40,7 @@ typedef struct reapFdResult {
  * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
-reapFdIteratorCreate(pid_t pid, reapFdIterator **iterator);
+reapFdIteratorCreate(pid_t pid, reapFdIterator **iterator) REAP_EXPORT;
 
 /**
  * @brief Destroys an iterator.
@@ -48,7 +48,7 @@ reapFdIteratorCreate(pid_t pid, reapFdIterator **iterator);
  * @param iterator  A pointer to the iterator.
  */
 void
-reapFdIteratorDestroy(reapFdIterator *iterator);
+reapFdIteratorDestroy(reapFdIterator *iterator) REAP_EXPORT;
 
 /**
  * @brief Gets the next result.
@@ -62,7 +62,7 @@ reapFdIteratorDestroy(reapFdIterator *iterator);
  * error code otherwise.
  */
 int
-reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result, char *file, size_t file_size);
+reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result, char *file, size_t file_size) REAP_EXPORT;
 
 #endif  // REAP_NO_ITERATE_FD
 

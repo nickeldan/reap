@@ -40,7 +40,7 @@ typedef struct reapProcInfo {
  * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
-reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size);
+reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size) REAP_EXPORT;
 
 #endif  // REAP_NO_PROC
 
