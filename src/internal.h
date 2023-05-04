@@ -13,16 +13,14 @@
 
 #ifdef __GNUC__
 #define REAP_FORMAT(pos) __attribute__((format(printf, pos, pos + 1)))
-#define REAP_HIDDEN      __attribute__((visibility("hidden")))
 #else
 #define REAP_FORMAT(pos)
-#define REAP_HIDDEN
 #endif
 
 void
-reapEmitError(const char *format, ...) REAP_FORMAT(1) REAP_HIDDEN;
+reapEmitError(const char *format, ...) REAP_FORMAT(1);
 
 int
-reapBetterReadlink(const char *pathname, char *buf, size_t bufsiz) REAP_HIDDEN;
+reapBetterReadlink(const char *pathname, char *buf, size_t bufsiz);
 
 #endif  // REAP_INTERNAL_H

@@ -1,3 +1,6 @@
+1.0.2:
+    - Added support for the REAP_NO_EXPORT preprocessor variable.
+
 1.0.1:
     - Added namespacing to hidden functions.
     - Added feature flags.

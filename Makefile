@@ -1,4 +1,4 @@
-CFLAGS := -std=gnu11 -fdiagnostics-color -Wall -Wextra -Wshadow -Werror
+CFLAGS := -std=gnu11 -fdiagnostics-color -Wall -Wextra -Werror -fvisibility=hidden
 ifeq ($(debug),yes)
     CFLAGS += -O0 -g -DDEBUG
 else

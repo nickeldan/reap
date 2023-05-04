@@ -41,7 +41,7 @@ typedef struct reapMapResult {
  * @return                  REAP_RET_OK if successful and an error code otherwise.
  */
 int
-reapMapIteratorCreate(pid_t pid, reapMapIterator **iterator);
+reapMapIteratorCreate(pid_t pid, reapMapIterator **iterator) REAP_EXPORT;
 
 /**
  * @brief Destroys an iterator.
@@ -49,7 +49,7 @@ reapMapIteratorCreate(pid_t pid, reapMapIterator **iterator);
  * @param iterator A pointer to the iterator.
  */
 void
-reapMapIteratorDestroy(reapMapIterator *iterator);
+reapMapIteratorDestroy(reapMapIterator *iterator) REAP_EXPORT;
 
 /**
  * @brief Gets the next result.
@@ -63,7 +63,8 @@ reapMapIteratorDestroy(reapMapIterator *iterator);
  * error code otherwise.
  */
 int
-reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char *name, size_t name_size);
+reapMapIteratorNext(const reapMapIterator *iterator, reapMapResult *result, char *name,
+                    size_t name_size) REAP_EXPORT;
 
 #endif  // REAP_NO_ITERATE_MAP
 
