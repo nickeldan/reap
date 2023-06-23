@@ -10,8 +10,6 @@
 
 #include "internal.h"
 
-#ifndef REAP_NO_ITERATE_FD
-
 struct reapFdIterator {
     DIR *dir;
     pid_t pid;
@@ -125,5 +123,3 @@ reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result, char *file, s
 
     return REAP_RET_OK;
 }
-
-#endif  // REAP_NO_ITERATE_FD

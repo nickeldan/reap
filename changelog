@@ -1,3 +1,7 @@
+1.0.3:
+    - Removed feature flags.
+    - Fixed a buffer truncation compilation warning.
+
 1.0.2:
     - Added support for the REAP_NO_EXPORT preprocessor variable.
 
