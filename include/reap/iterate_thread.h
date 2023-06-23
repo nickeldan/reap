@@ -11,8 +11,6 @@
 
 #include "definitions.h"
 
-#ifndef REAP_NO_ITERATE_THREAD
-
 /**
  * @brief Iterates over the threads of a process.
  */
@@ -48,7 +46,5 @@ reapThreadIteratorDestroy(reapThreadIterator *iterator) REAP_EXPORT;
  */
 int
 reapThreadIteratorNext(const reapThreadIterator *iterator, pid_t *thread) REAP_EXPORT;
-
-#endif  // REAP_NO_ITERATE_THREAD
 
 #endif  // REAP_ITERATE_THREAD_H

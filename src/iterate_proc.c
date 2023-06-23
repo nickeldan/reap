@@ -5,8 +5,6 @@
 
 #include "internal.h"
 
-#ifndef REAP_NO_ITERATE_PROC
-
 struct reapProcIterator {
     DIR *dir;
 };
@@ -87,5 +85,3 @@ reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info, char 
         }
     }
 }
-
-#endif  // REAP_NO_ITERATE_PROC

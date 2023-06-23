@@ -7,8 +7,6 @@
 
 #include "internal.h"
 
-#ifndef REAP_NO_PROC
-
 int
 reapGetProcInfo(pid_t pid, reapProcInfo *info, char *exe_path, size_t path_size)
 {
@@ -93,5 +91,3 @@ done:
     fclose(file);
     return ret;
 }
-
-#endif  // REAP_NO_PROC

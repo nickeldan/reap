@@ -13,8 +13,6 @@
 #include "definitions.h"
 #include "proc.h"
 
-#ifndef REAP_NO_ITERATE_PROC
-
 /**
  * @brief Iterates over the running processes.
  */
@@ -52,7 +50,5 @@ reapProcIteratorDestroy(reapProcIterator *iterator) REAP_EXPORT;
 int
 reapProcIteratorNext(const reapProcIterator *iterator, reapProcInfo *info, char *exe_path,
                      size_t path_size) REAP_EXPORT;
-
-#endif  // REAP_NO_ITERATE_PROC
 
 #endif  // REAP_ITERATE_PROC_H
