@@ -70,7 +70,7 @@ reapFdIteratorDestroy(reapFdIterator *iterator)
 int
 reapFdIteratorNext(reapFdIterator *iterator, reapFdResult *result, char *file, size_t file_size)
 {
-    char base_buffer[30], buffer[40], path[PATH_MAX];
+    char base_buffer[30], buffer[50], path[PATH_MAX];
     struct dirent *entry;
     struct stat fs;
 
